@@ -60,6 +60,9 @@ class py3DSeedEditor:
         self.colorbar = colorbar
         self.cmap = cmap 
 
+        self.press = None
+        self.press2 = None
+
         self.fig.subplots_adjust(left=0.25, bottom=0.25)
 
 
@@ -78,13 +81,17 @@ class py3DSeedEditor:
         # conenction to wheel events
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
         self.actual_slice_slider.on_changed(self.sliceslider_update)
+# draw
+        self.fig.canvas.mpl_connect('button_press_event', self.on_press)
+        self.fig.canvas.mpl_connect('button_release_event', self.on_release)
+        self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
         self.show_slice()
 
 
     def show_slice(self):
         sliceimg = self.img[:,:,self.actual_slice]
-        self.imsh = self.ax.imshow(sliceimg, self.cmap)
+        self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = 0, vmax = 2000)
         self.fig.canvas.draw()
     def next_slice(self):
         self.actual_slice = self.actual_slice + 1
@@ -116,8 +123,45 @@ class py3DSeedEditor:
         self.actual_slice_slider.set_val (self.actual_slice)
         #print self.actual_slice
 
-        #pdb.set_trace();
 
+    def on_press(self, event):
+        'on but-ton press we will see if the mouse is over us and store some data'
+        if event.inaxes != self.ax: return
+        #contains, attrd = self.rect.contains(event)
+        #if not contains: return
+        #print 'event contains', self.rect.xy
+        #x0, y0 = self.rect.xy
+        self.press = [event.xdata], [event.ydata], event.button
+        #self.press1 = True
+    def on_motion(self, event):
+        'on motion we will move the rect if the mouse is over us'
+        if self.press is None: return
+
+        if event.inaxes != self.ax: return
+        print event.inaxes
+
+        x0, y0, btn = self.press
+        x0.append(event.xdata)
+        y0.append(event.ydata)
+
+    def on_release(self, event):
+        'on release we reset the press data'
+        if self.press is None: return
+        
+        print self.press
+        x0, y0, btn = self.press
+        if btn == 1:
+            color = 'r'
+        elif btn == 2:
+            color = 'b'
+            
+        plt.axes(self.ax)
+        plt.plot(x0, y0)
+        self.fig.canvas.draw()
+        #pdb.set_trace();
+        self.press = None
+
+        #self.rect.figure.canvas.draw()
 
     #return data 
 
