@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+from matplotlib.widgets import Slider, Button, RadioButtons
+
 
 #Ahooooooj
 
 
-def drawSlice(data):
-    fig = 6
-
-def py3DSeedEditor(data, voxelsizemm=[[1],[1],[1]]):
+class py3DSeedEditor:
     """ Volumetric vessel segmentation from liver.
     data: CT (or MRI) 3D data
     segmentation: labeled image with same size as data where label: 
@@ -44,15 +44,82 @@ def py3DSeedEditor(data, voxelsizemm=[[1],[1],[1]]):
     #if data.shape != segmentation.shape:
     #    raise Exception('Input size error','Shape if input data and segmentation must be same')
 
-    
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.imshow(data)
+    def __init__(self, img, voxelsizemm=[1,1,1], startslice = 0 , colorbar = True,
+            cmap = matplotlib.cm.Greys_r):
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111)
+        if len(img.shape) == 2:
+            imgtmp = img
+            img = np.zeros([imgtmp.shape[0], imgtmp.shape[1], 1])
+            #self.imgshape.append(1)
+            img[:,:,-1] = imgtmp
+            pdb.set_trace();
+        self.imgshape = list(img.shape)
+        self.img = img
+        self.actual_slice = startslice
+        self.colorbar = colorbar
+        self.cmap = cmap 
 
-    fig.canvas.draw()
-    plt.show()
+        self.fig.subplots_adjust(left=0.25, bottom=0.25)
 
-    return data 
+
+        self.show_slice()
+
+        if self.colorbar:
+            self.fig.colorbar(self.imsh)
+
+        # user interface look
+
+        axcolor = 'lightgoldenrodyellow'
+        ax_actual_slice = self.fig.add_axes([0.2, 0.2, 0.5, 0.03], axisbg=axcolor)
+        self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0, 
+                self.imgshape[2], valinit=startslice)
+        
+        # conenction to wheel events
+        self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
+        self.actual_slice_slider.on_changed(self.sliceslider_update)
+
+        self.show_slice()
+
+
+    def show_slice(self):
+        sliceimg = self.img[:,:,self.actual_slice]
+        self.imsh = self.ax.imshow(sliceimg, self.cmap)
+        self.fig.canvas.draw()
+    def next_slice(self):
+        self.actual_slice = self.actual_slice + 1
+        if self.actual_slice >= self.imgshape[2]:
+            self.actual_slice = 0
+
+    def sliceslider_update(self, val):
+# zaokrouhlení
+        #self.actual_slice_slider.set_val(round(self.actual_slice_slider.val))
+        self.actual_slice = round(val)
+        self.show_slice()
+
+
+    def prev_slice(self):
+        self.actual_slice = self.actual_slice - 1
+        if self.actual_slice < 0:
+            self.actual_slice = self.imgshape[2] - 1
+
+    def show(self):
+        plt.show()
+        return 6
+
+    def on_scroll(self, event):
+        if event.button == 'up':
+            self.next_slice()
+        if event.button == 'down':
+            self.prev_slice()
+        self.show_slice()
+        self.actual_slice_slider.set_val (self.actual_slice)
+        #print self.actual_slice
+
+        #pdb.set_trace();
+
+
+    #return data 
 
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
@@ -103,7 +170,7 @@ if __name__ == "__main__":
     # input parser
     parser = argparse.ArgumentParser(description='Segment vessels from liver')
     parser.add_argument('-f','--filename',  
-            default = 'lena',
+            default = '../jatra/main/step.mat',
             help='*.mat file with variables "data", "segmentation" and "threshod"')
     parser.add_argument('-d', '--debug', action='store_true',
             help='run in debug mode')
@@ -131,7 +198,8 @@ if __name__ == "__main__":
         logger.debug( mat.keys())
 
         # load specific variable
-        data = scipy.io.loadmat(args.filename, variable_names=['data'])
+        dataraw = scipy.io.loadmat(args.filename, variable_names=['data'])
+        data = dataraw['data']
 
         #logger.debug(matthreshold['threshold'][0][0])
 
@@ -139,12 +207,13 @@ if __name__ == "__main__":
         # zastavení chodu programu pro potřeby debugu, 
         # ovládá se klávesou's','c',... 
         # zakomentovat
-        pdb.set_trace();
+        #pdb.set_trace();
 
         # zde by byl prostor pro ruční (interaktivní) zvolení prahu z klávesnice 
         #tě ebo jinak
 
-    pdb.set_trace();
-    output = py3DSeedEditor(data)
+    pyed = py3DSeedEditor(data)
+    output = pyed.show()
+
     scipy.io.savemat(args.outputfile,{'vesselSegm':output})
 
