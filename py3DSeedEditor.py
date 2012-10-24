@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
 import unittest
@@ -24,27 +24,26 @@ from matplotlib.widgets import Slider, Button, RadioButtons
 
 
 class py3DSeedEditor:
-    """ Volumetric vessel segmentation from liver.
-    data: CT (or MRI) 3D data
-    segmentation: labeled image with same size as data where label: 
-    1 mean liver pixels,
-    -1 interesting tissuse (bones)
-    0 othrewise
+    """ Viewer and seed editor for 2D and 3D data. 
+
+    py3DSeedEditor(img, ...)
+
+    img: 2D or 3D grayscale data
+    voxelsizemm: size of voxel, default is [1, 1, 1]
+    initslice: 0
+    colorbar: True/False, default is True
+    cmap: colormap
+
+
+    ed = py3DSeedEditor(img)
+    ed.show()
+    selected_seeds = ed.seeds
+
     """
-#   Funkce pracuje z počátku na principu jednoduchého prahování. Nalezne se 
-#   největší souvislý objekt nad stanoveným prahem, Průběžně bude segmentace 
-#   zpřesňována. Bude nutné hledat cévy, které se spojují mimo játra, ale 
-#   ignorovat žebra. 
-#   Proměnné threshold, dataFiltering a nObj se postupně pokusíme eliminovat a 
-#   navrhnout je automaticky. 
-#   threshold: ručně určený práh
-#   dataFiltering: označuje, jestli budou data filtrována uvnitř funkce, nebo 
-#   již vstupují filtovaná. False znamená, že vstupují filtrovaná.
-#   nObj: označuje kolik největších objektů budeme hledat
     #if data.shape != segmentation.shape:
     #    raise Exception('Input size error','Shape if input data and segmentation must be same')
 
-    def __init__(self, img, voxelsizemm=[1,1,1], startslice = 0 , colorbar = True,
+    def __init__(self, img, voxelsizemm=[1,1,1], initslice = 0 , colorbar = True,
             cmap = matplotlib.cm.Greys_r):
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
@@ -56,9 +55,13 @@ class py3DSeedEditor:
             pdb.set_trace();
         self.imgshape = list(img.shape)
         self.img = img
-        self.actual_slice = startslice
+        self.actual_slice = initslice
         self.colorbar = colorbar
         self.cmap = cmap 
+        self.seeds = np.zeros(self.imgshape, np.int8)
+        self.imgmax = np.max(img)
+        self.imgmin = np.min(img)
+
 
         self.press = None
         self.press2 = None
@@ -76,7 +79,7 @@ class py3DSeedEditor:
         axcolor = 'lightgoldenrodyellow'
         ax_actual_slice = self.fig.add_axes([0.2, 0.2, 0.5, 0.03], axisbg=axcolor)
         self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0, 
-                self.imgshape[2], valinit=startslice)
+                self.imgshape[2], valinit=initslice)
         
         # conenction to wheel events
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
@@ -91,12 +94,23 @@ class py3DSeedEditor:
 
     def show_slice(self):
         sliceimg = self.img[:,:,self.actual_slice]
-        self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = 0, vmax = 2000)
+        self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax)
+        #plt.hold(True)
+        #pdb.set_trace();
+        self.ax.imshow(self.prepare_overlay(self.seeds[:,:,self.actual_slice]))
         self.fig.canvas.draw()
+        #pdb.set_trace();
+        #plt.hold(False)
+
     def next_slice(self):
         self.actual_slice = self.actual_slice + 1
         if self.actual_slice >= self.imgshape[2]:
             self.actual_slice = 0
+
+    def prev_slice(self):
+        self.actual_slice = self.actual_slice - 1
+        if self.actual_slice < 0:
+            self.actual_slice = self.imgshape[2] - 1
 
     def sliceslider_update(self, val):
 # zaokrouhlení
@@ -104,26 +118,45 @@ class py3DSeedEditor:
         self.actual_slice = round(val)
         self.show_slice()
 
+    def prepare_overlay(self,seeds):
+        sh = list(seeds.shape)
+        if len(sh) == 2:
+            sh.append(4)
+        else:
+            sh[2] = 4
+        # assert sh[2] == 1, 'wrong overlay shape'
+        # sh[2] = 4
+        overlay = np.zeros(sh)
 
-    def prev_slice(self):
-        self.actual_slice = self.actual_slice - 1
-        if self.actual_slice < 0:
-            self.actual_slice = self.imgshape[2] - 1
+        overlay[:,:,0] = (seeds == 1)
+        overlay[:,:,1] = (seeds == 2)
+        overlay[:,:,2] = (seeds == 3)
+
+        overlay[:,:,3] = (seeds > 0)
+
+        return overlay
+
+
 
     def show(self):
+        """ Function run viewer window.
+        """
         plt.show()
-        return 6
+        return self.seeds
 
     def on_scroll(self, event):
+        ''' mouse wheel is used for setting slider value'''
         if event.button == 'up':
             self.next_slice()
         if event.button == 'down':
             self.prev_slice()
-        self.show_slice()
         self.actual_slice_slider.set_val (self.actual_slice)
+        #tim, ze dojde ke zmene slideru je show_slce volan z nej
+        #self.show_slice()
         #print self.actual_slice
 
 
+## malování -------------------
     def on_press(self, event):
         'on but-ton press we will see if the mouse is over us and store some data'
         if event.inaxes != self.ax: return
@@ -138,7 +171,7 @@ class py3DSeedEditor:
         if self.press is None: return
 
         if event.inaxes != self.ax: return
-        print event.inaxes
+        #print event.inaxes
 
         x0, y0, btn = self.press
         x0.append(event.xdata)
@@ -147,21 +180,29 @@ class py3DSeedEditor:
     def on_release(self, event):
         'on release we reset the press data'
         if self.press is None: return
-        
-        print self.press
+        #print self.press
         x0, y0, btn = self.press
         if btn == 1:
             color = 'r'
         elif btn == 2:
             color = 'b'
-            
-        plt.axes(self.ax)
-        plt.plot(x0, y0)
-        self.fig.canvas.draw()
+
+        #plt.axes(self.ax)
+        #plt.plot(x0, y0)
+        self.set_seeds(y0, x0, self.actual_slice, btn )
+        #self.fig.canvas.draw()
         #pdb.set_trace();
         self.press = None
+        self.show_slice()
 
-        #self.rect.figure.canvas.draw()
+    def set_seeds(self, px, py, pz, value = 1, voxelsizemm = [1,1,1], cursorsizemm = [1,1,1]):
+        assert len(px) == len(py) , 'px and py describes a point, their size must be same'
+
+        for i, item in enumerate(px):
+            self.seeds[item, py[i], pz] = value
+
+
+#self.rect.figure.canvas.draw()
 
     #return data 
 
