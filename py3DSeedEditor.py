@@ -52,7 +52,7 @@ class py3DSeedEditor:
             img = np.zeros([imgtmp.shape[0], imgtmp.shape[1], 1])
             #self.imgshape.append(1)
             img[:,:,-1] = imgtmp
-            pdb.set_trace();
+            #pdb.set_trace();
         self.imgshape = list(img.shape)
         self.img = img
         self.actual_slice = initslice
@@ -212,16 +212,32 @@ class Tests(unittest.TestCase):
         pass
     def setUp(self):
         """ Nastavení společných proměnných pro testy  """
-        datashape = [220,115,30]
+        datashape = [120,85,30]
         self.datashape = datashape
         self.rnddata = np.random.rand(datashape[0], datashape[1], datashape[2])
         self.segmcube = np.zeros(datashape)
-        self.segmcube[130:190, 40:90,5:15] = 1
+        self.segmcube[30:70, 40:60,5:15] = 1
+
+        self.ed = py3DSeedEditor(self.rnddata)
+        #ed.show()
+        #selected_seeds = ed.seeds
 
     def test_same_size_input_and_output(self):
         """Funkce testuje stejnost vstupních a výstupních dat"""
-        outputdata = vesselSegmentation(self.rnddata,self.segmcube)
-        self.assertEqual(outputdata.shape, self.rnddata.shape)
+        #outputdata = vesselSegmentation(self.rnddata,self.segmcube)
+        self.assertEqual(self.ed.seeds.shape, self.rnddata.shape)
+    def test_set_seeds(self):
+        ''' Testuje uložení do seedů '''
+        val = 7
+        self.ed.set_seeds([10,12,13],[13,13,15], 3, value=val)
+        self.assertEqual(self.ed.seeds[10,13,3],val)
+
+    def test_prepare_overlay(self):
+        ''' Testuje vytvoření rgba obrázku z labelů'''
+        overlay = self.ed.prepare_overlay(self.segmcube[:,:,6])
+        onePixel = overlay[30,40]
+        self.assertTrue(all(onePixel == [1,0,0,1]))
+
 
 
 #
@@ -238,7 +254,7 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel(logging.WARNING)
 # při vývoji si necháme vypisovat všechny hlášky
-    logger.setLevel(logging.DEBUG)
+    #logger.setLevel(logging.DEBUG)
 
     ch = logging.StreamHandler()
 #   output configureation
@@ -255,7 +271,8 @@ if __name__ == "__main__":
     # input parser
     parser = argparse.ArgumentParser(description='Segment vessels from liver')
     parser.add_argument('-f','--filename',  
-            default = '../jatra/main/step.mat',
+            #default = '../jatra/main/step.mat',
+            default = 'lena',
             help='*.mat file with variables "data", "segmentation" and "threshod"')
     parser.add_argument('-d', '--debug', action='store_true',
             help='run in debug mode')
@@ -300,5 +317,5 @@ if __name__ == "__main__":
     pyed = py3DSeedEditor(data)
     output = pyed.show()
 
-    scipy.io.savemat(args.outputfile,{'vesselSegm':output})
+    scipy.io.savemat(args.outputfile,{'data':output})
 
