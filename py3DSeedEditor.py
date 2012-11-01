@@ -202,6 +202,17 @@ class py3DSeedEditor:
             self.seeds[item, py[i], pz] = value
 
 
+# @todo 
+    def get_seedlist(selfi, label):
+        """ Return list of all seeds with specific label
+        """
+
+        values = []
+        indexes = []
+
+        for ind in seeds:
+            pass
+
 #self.rect.figure.canvas.draw()
 
     #return data 
@@ -237,6 +248,8 @@ class Tests(unittest.TestCase):
         overlay = self.ed.prepare_overlay(self.segmcube[:,:,6])
         onePixel = overlay[30,40]
         self.assertTrue(all(onePixel == [1,0,0,1]))
+
+        
 
 
 
