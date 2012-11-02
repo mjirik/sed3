@@ -217,6 +217,16 @@ class py3DSeedEditor:
 
     #return data 
 
+
+def generate_data(shp=[16,16,16]):
+    """ Generating data """
+
+    x = np.ones(shp)
+# inserting box
+    x[4:-4, 6:-2, 1:-6] = -1
+    x_noisy = x + np.random.normal(0, 0.6, size=x.shape)
+    return x_noisy
+
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
     def test_t(self):
@@ -289,6 +299,8 @@ if __name__ == "__main__":
             help='*.mat file with variables "data", "segmentation" and "threshod"')
     parser.add_argument('-d', '--debug', action='store_true',
             help='run in debug mode')
+    parser.add_argument('-e3', '--example3d', action='store_true',
+            help='run with 3D example data')
     parser.add_argument('-t', '--tests', action='store_true', 
             help='run unittest')
     parser.add_argument('-o', '--outputfile', type=str,
@@ -304,7 +316,9 @@ if __name__ == "__main__":
         sys.argv[1:]=[]
         unittest.main()
 
-    if args.filename == 'lena':
+    if args.example3d:
+        data = generate_data()
+    elif args.filename == 'lena':
         from scipy import misc
         data = misc.lena()
     else:
