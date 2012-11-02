@@ -203,29 +203,23 @@ class py3DSeedEditor:
 
 
 # @todo 
-    def get_seedlist(selfi, label):
+    def get_seed_sub(self, label):
         """ Return list of all seeds with specific label
         """
+        sx, sy, sz = np.nonzero(self.seeds == label)
 
-        values = []
-        indexes = []
+        return sx, sy, sz
 
-        for ind in seeds:
-            pass
+    def get_seed_val(self, label):
+        """ Return data values for specific seed label"""
+        return self.img[self.seeds==label]
+            
 
 #self.rect.figure.canvas.draw()
 
     #return data 
 
 
-def generate_data(shp=[16,16,16]):
-    """ Generating data """
-
-    x = np.ones(shp)
-# inserting box
-    x[4:-4, 6:-2, 1:-6] = -1
-    x_noisy = x + np.random.normal(0, 0.6, size=x.shape)
-    return x_noisy
 
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
@@ -259,6 +253,53 @@ class Tests(unittest.TestCase):
         onePixel = overlay[30,40]
         self.assertTrue(all(onePixel == [1,0,0,1]))
 
+    def test_get_seed_sub(self):
+        """ Testuje, jestli funkce pro vracení dat funguje správně, 
+        je to zkoušeno na konkrétních hodnotách
+        """
+        val = 7
+        self.ed.set_seeds([10,12,13],[13,13,15], 3, value=val)
+        seedsx, seedsy, seedsz = self.ed.get_seed_sub(val)
+
+        found = [False, False, False]
+        for i in range(len(seedsx)):
+            if (seedsx[i] == 10) & (seedsy[i] == 13) & (seedsz[i] == 3):
+                found[0] = True
+            if (seedsx[i] == 12) & (seedsy[i] == 13) & (seedsz[i] == 3):
+                found[1] = True
+            if (seedsx[i] == 13) & (seedsy[i] == 15) & (seedsz[i] == 3):
+                found[2] = True
+
+        logger.debug(found)
+
+        self.assertTrue(all(found))
+
+        
+    def test_get_seed_val(self):
+        """ Testuje, jestli jsou správně vraceny hodnoty pro označené pixely
+        je to zkoušeno na konkrétních hodnotách
+        """
+        label = 7
+        self.ed.set_seeds([11],[14], 4, value=label)
+        seedsx, seedsy, seedsz = self.ed.get_seed_sub(label)
+
+        val = self.ed.get_seed_val(label)
+        expected_val = self.ed.img[11,14,4]
+
+        logger.debug(val)
+        logger.debug(expected_val)
+
+        self.assertIn(expected_val, val)
+       # found = False
+       # for i in range(len(val)):
+       #     if (val[i] == :
+       #         found = True
+
+
+       # self.assertTrue(found)
+        
+
+
         
 
 
@@ -272,6 +313,15 @@ class Tests(unittest.TestCase):
 #
         
         
+def generate_data(shp=[16,16,16]):
+    """ Generating data """
+
+    x = np.ones(shp)
+# inserting box
+    x[4:-4, 6:-2, 1:-6] = -1
+    x_noisy = x + np.random.normal(0, 0.6, size=x.shape)
+    return x_noisy
+
 # --------------------------main------------------------------
 if __name__ == "__main__":
     logger = logging.getLogger()
@@ -345,4 +395,5 @@ if __name__ == "__main__":
     output = pyed.show()
 
     scipy.io.savemat(args.outputfile,{'data':output})
+    pyed.get_seed_val(1)
 
