@@ -94,10 +94,10 @@ class py3DSeedEditor:
 
     def show_slice(self):
         sliceimg = self.img[:,:,self.actual_slice]
-        self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax)
+        self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax, interpolation='nearest')
         #plt.hold(True)
         #pdb.set_trace();
-        self.ax.imshow(self.prepare_overlay(self.seeds[:,:,self.actual_slice]))
+        self.ax.imshow(self.prepare_overlay(self.seeds[:,:,self.actual_slice]), interpolation='nearest')
         self.fig.canvas.draw()
         #pdb.set_trace();
         #plt.hold(False)
