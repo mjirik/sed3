@@ -108,7 +108,6 @@ class py3DSeedEditor:
 
     def draw_slice(self):
         sliceimg = self.img[:,:,self.actual_slice]
-        #self.ax.cla()
         self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax, interpolation='nearest')
         #plt.hold(True)
         #pdb.set_trace();
@@ -132,7 +131,7 @@ class py3DSeedEditor:
 
 
         self.fig.canvas.draw()
-        self.ax.cla()
+        #self.ax.cla()
         #del(ctr)
 
 
