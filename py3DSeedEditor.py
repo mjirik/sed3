@@ -43,7 +43,9 @@ class py3DSeedEditor:
     #    raise Exception('Input size error','Shape if input data and segmentation must be same')
 
     def __init__(self, img, voxelsizemm=[1,1,1], initslice = 0 , colorbar = True,
-            cmap = matplotlib.cm.Greys_r, seeds = None, contour = None):
+            cmap = matplotlib.cm.Greys_r, seeds = None, contour = None,
+            mouse_button_map= {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
+            ):
         self.fig = plt.figure()
         #self.ax = self.fig.add_subplot(111)
         if len(img.shape) == 2:
@@ -65,7 +67,7 @@ class py3DSeedEditor:
         self.imgmin = np.min(img)
 
         """ Mapping mouse button to class number. Default is normal order"""
-        self.button_map = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
+        self.button_map = mouse_button_map
 
         self.contour = contour
 
