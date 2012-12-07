@@ -20,7 +20,6 @@ import matplotlib
 from matplotlib.widgets import Slider, Button, RadioButtons
 
 
-#Ahooooooj
 
 
 class py3DSeedEditor:
@@ -46,7 +45,7 @@ class py3DSeedEditor:
     def __init__(self, img, voxelsizemm=[1,1,1], initslice = 0 , colorbar = True,
             cmap = matplotlib.cm.Greys_r, seeds = None, contour = None):
         self.fig = plt.figure()
-        self.ax = self.fig.add_subplot(111)
+        #self.ax = self.fig.add_subplot(111)
         if len(img.shape) == 2:
             imgtmp = img
             img = np.zeros([imgtmp.shape[0], imgtmp.shape[1], 1])
@@ -65,16 +64,22 @@ class py3DSeedEditor:
         self.imgmax = np.max(img)
         self.imgmin = np.min(img)
 
-        """ Mapping mouse button to class number"""
-        self.button_map = {1:1, 2:3, 3:2, 4:4, 5:5, 6:6, 7:7, 8:8}
+        """ Mapping mouse button to class number. Default is normal order"""
+        self.button_map = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
 
         self.contour = contour
+
 
 
         self.press = None
         self.press2 = None
 
-        self.fig.subplots_adjust(left=0.25, bottom=0.25)
+
+# language
+        self.texts = {'btn_delete':'Delete'}
+
+        #iself.fig.subplots_adjust(left=0.25, bottom=0.25)
+        self.ax = self.fig.add_axes([0.2, 0.3, 0.7,0.6])
 
 
         self.draw_slice()
@@ -97,6 +102,12 @@ class py3DSeedEditor:
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
+
+# delete seeds
+        self.ax_delete_seeds = self.fig.add_axes([0.2,0.1,0.1,0.075])
+        self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_delete'])
+        self.btn_delete.on_clicked(self.callback_delete)
+
         self.draw_slice()
 
 
@@ -111,7 +122,7 @@ class py3DSeedEditor:
         self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax, interpolation='nearest')
         #plt.hold(True)
         #pdb.set_trace();
-        self.ax.imshow(self.prepare_overlay(self.seeds[:,:,self.actual_slice]), interpolation='nearest')
+        self.ax.imshow(self.prepare_overlay(self.seeds[:,:,self.actual_slice]), interpolation='nearest', vmin = self.imgmin, vmax = self.imgmax)
 
         # vykreslení okraje
         #X,Y = np.meshgrid(self.imgshape[0], self.imgshape[1])
@@ -234,6 +245,11 @@ class py3DSeedEditor:
         #pdb.set_trace();
         self.press = None
         self.update_slice()
+
+    def callback_delete(self, event):
+        self.seeds[:,:,self.actual_slice] = 0
+        self.update_slice()
+
 
     def set_seeds(self, px, py, pz, value = 1, voxelsizemm = [1,1,1], cursorsizemm = [1,1,1]):
         assert len(px) == len(py) , 'px and py describes a point, their size must be same'
