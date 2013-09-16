@@ -32,6 +32,7 @@ class py3DSeedEditor:
     initslice: 0
     colorbar: True/False, default is True
     cmap: colormap
+    zaxis: axis with slice numbers
 
 
     ed = py3DSeedEditor(img)
@@ -42,18 +43,31 @@ class py3DSeedEditor:
     #if data.shape != segmentation.shape:
     #    raise Exception('Input size error','Shape if input data and segmentation must be same')
 
+
     def __init__(self, img, voxelsizemm=[1,1,1], initslice = 0 , colorbar = True,
-            cmap = matplotlib.cm.Greys_r, seeds = None, contour = None,
+            cmap = matplotlib.cm.Greys_r, seeds = None, contour = None, zaxis=0,
             mouse_button_map= {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
             ):
         self.fig = plt.figure()
-        #self.ax = self.fig.add_subplot(111)
+
         if len(img.shape) == 2:
             imgtmp = img
-            img = np.zeros([imgtmp.shape[0], imgtmp.shape[1], 1])
+            img = np.zeros([1, imgtmp.shape[0], imgtmp.shape[1]])
             #self.imgshape.append(1)
-            img[:,:,-1] = imgtmp
+            img[-1,:,:] = imgtmp
+
+            zaxis = 0
             #pdb.set_trace();
+
+        # Rotate data in depndecy on zaxis
+        img = self._rotate_start(img, zaxis)
+        seeds = self._rotate_start(seeds, zaxis)
+        contour = self._rotate_start(contour, zaxis)
+
+        self.rotated_back = False
+        self.zaxis = zaxis
+
+        #self.ax = self.fig.add_subplot(111)
         self.imgshape = list(img.shape)
         self.img = img
         self.actual_slice = initslice
@@ -112,6 +126,31 @@ class py3DSeedEditor:
 
         self.draw_slice()
 
+    def _rotate_start(self, data, zaxis):
+        if data != None:
+            if zaxis == 0:
+                data = np.transpose(data,(1,2,0))
+            elif zaxis == 2:
+                pass
+            else:
+                print "problem with zaxis in _rotate_start()"
+
+        return data
+
+    def _rotate_end(self, data, zaxis):
+        if data != None:
+            if self.rotated_back == False:
+                if zaxis == 0:
+                    data = np.transpose(data,(2,0,1))
+                elif zaxis == 2:
+                    pass
+                else:
+                    print "problem with zaxis in _rotate_start()"
+
+            else:
+                print "There is a danger in calling show() twice"
+
+        return data
 
     def update_slice(self):
         #TODO tohle je tu kvuli contour, neumim ji odstranit jinak
@@ -192,6 +231,11 @@ class py3DSeedEditor:
         """ Function run viewer window.
         """
         plt.show()
+        # Rotate data in depndecy on zaxis
+        self.img = self._rotate_end(self.img, self.zaxis)
+        self.seeds = self._rotate_end(self.seeds, self.zaxis)
+        self.contour = self._rotate_end(self.contour, self.zaxis)
+        self.rotated_back = True
         return self.seeds
 
     def on_scroll(self, event):
@@ -371,7 +415,7 @@ class Tests(unittest.TestCase):
 #
         
         
-def generate_data(shp=[16,16,16]):
+def generate_data(shp=[16,20,24]):
     """ Generating data """
 
     x = np.ones(shp)
@@ -400,7 +444,7 @@ if __name__ == "__main__":
 
 
     # input parser
-    parser = argparse.ArgumentParser(description='Segment vessels from liver')
+    parser = argparse.ArgumentParser(description='Segment vessels from liver. For example call py3DSeedEditor -f lena')
     parser.add_argument('-f','--filename',  
             #default = '../jatra/main/step.mat',
             default = 'lena',
