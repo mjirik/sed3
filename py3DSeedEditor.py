@@ -46,7 +46,8 @@ class py3DSeedEditor:
 
     def __init__(self, img, voxelsizemm=[1,1,1], initslice = 0 , colorbar = True,
             cmap = matplotlib.cm.Greys_r, seeds = None, contour = None, zaxis=0,
-            mouse_button_map= {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
+            mouse_button_map= {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8},
+            windowW = [], windowC = []
             ):
         self.fig = plt.figure()
 
@@ -59,7 +60,7 @@ class py3DSeedEditor:
             zaxis = 0
             #pdb.set_trace();
 
-        # Rotate data in depndecy on zaxis
+        # Rotate data in depndecy on zaxispyplot
         img = self._rotate_start(img, zaxis)
         seeds = self._rotate_start(seeds, zaxis)
         contour = self._rotate_start(contour, zaxis)
@@ -77,8 +78,12 @@ class py3DSeedEditor:
             self.seeds = np.zeros(self.imgshape, np.int8)
         else:
             self.seeds = seeds
-        self.imgmax = np.max(img)
-        self.imgmin = np.min(img)
+        if not (windowW and windowC):
+            self.imgmax = np.max(img)
+            self.imgmin = np.min(img)
+        else:
+            self.imgmax = windowC + (windowW / 2)
+            self.imgmin = windowC - (windowW / 2)
 
         """ Mapping mouse button to class number. Default is normal order"""
         self.button_map = mouse_button_map
