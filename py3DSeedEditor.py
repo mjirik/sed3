@@ -97,7 +97,7 @@ class py3DSeedEditor:
 
 
 # language
-        self.texts = {'btn_delete':'Delete'}
+        self.texts = {'btn_delete':'Delete', 'btn_close': 'Close'}
 
         #iself.fig.subplots_adjust(left=0.25, bottom=0.25)
         self.ax = self.fig.add_axes([0.2, 0.3, 0.7,0.6])
@@ -111,7 +111,7 @@ class py3DSeedEditor:
         # user interface look
 
         axcolor = 'lightgoldenrodyellow'
-        ax_actual_slice = self.fig.add_axes([0.2, 0.2, 0.5, 0.03], axisbg=axcolor)
+        ax_actual_slice = self.fig.add_axes([0.2, 0.2, 0.6, 0.03], axisbg=axcolor)
         self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0, 
                 self.imgshape[2], valinit=initslice)
         
@@ -128,6 +128,11 @@ class py3DSeedEditor:
         self.ax_delete_seeds = self.fig.add_axes([0.2,0.1,0.1,0.075])
         self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_delete'])
         self.btn_delete.on_clicked(self.callback_delete)
+
+# close button
+        self.ax_delete_seeds = self.fig.add_axes([0.7,0.1,0.1,0.075])
+        self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_close'])
+        self.btn_delete.on_clicked(self.callback_close)
 
         self.draw_slice()
 
@@ -301,6 +306,10 @@ class py3DSeedEditor:
         self.seeds[:,:,self.actual_slice] = 0
         self.update_slice()
 
+
+    def callback_close(self, event):
+        matplotlib.pyplot.clf()
+        matplotlib.pyplot.close()
 
     def set_seeds(self, px, py, pz, value = 1, voxelsizemm = [1,1,1], cursorsizemm = [1,1,1]):
         assert len(px) == len(py) , 'px and py describes a point, their size must be same'
