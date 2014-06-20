@@ -173,7 +173,9 @@ class py3DSeedEditor:
         self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax, interpolation='nearest')
         #plt.hold(True)
         #pdb.set_trace();
-        self.ax.imshow(self.prepare_overlay(self.seeds[:,:,self.actual_slice]), interpolation='nearest', vmin = self.imgmin, vmax = self.imgmax)
+        self.ax.imshow(self.prepare_overlay(
+            self.seeds[:, :, int(self.actual_slice)]
+        ), interpolation='nearest', vmin=self.imgmin, vmax=self.imgmax)
 
         # vykreslení okraje
         #X,Y = np.meshgrid(self.imgshape[0], self.imgshape[1])
