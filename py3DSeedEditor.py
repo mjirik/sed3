@@ -169,7 +169,7 @@ class py3DSeedEditor:
         self.draw_slice()
 
     def draw_slice(self):
-        sliceimg = self.img[:,:,self.actual_slice]
+        sliceimg = self.img[:, :, int(self.actual_slice)]
         self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin = self.imgmin, vmax = self.imgmax, interpolation='nearest')
         #plt.hold(True)
         #pdb.set_trace();
