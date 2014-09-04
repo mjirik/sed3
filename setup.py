@@ -10,7 +10,7 @@ setup(
     # http://packaging.python.org/en/latest/tutorial.html#version
     version='1.0.0',
     url='https://github.com/mjirik/py3DSeedEditor',
-    author='Miroslav Jiřík',
+    author='Miroslav Jirik',
     author_email='miroslav.jirik@gmail.com',
     license='MIT',
 
