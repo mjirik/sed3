@@ -18,3 +18,5 @@ Install notes
 =============
 
     sudo apt-get install python-matplotlib
+    
+    pip install py3DSeedEditor
