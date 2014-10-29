@@ -1,2 +1,2 @@
-__all__= ['py3DSeedEditor']
-from py3DSeedEditor import *
+__all__= ['sed3']
+from sed3 import *

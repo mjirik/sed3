@@ -20,10 +20,10 @@ import matplotlib
 from matplotlib.widgets import Slider, Button, RadioButtons
 
 
-class py3DSeedEditor:
+class sed3:
     """ Viewer and seed editor for 2D and 3D data.
 
-    py3DSeedEditor(img, ...)
+    sed3(img, ...)
 
     img: 2D or 3D grayscale data
     voxelsizemm: size of voxel, default is [1, 1, 1]
@@ -33,7 +33,7 @@ class py3DSeedEditor:
     zaxis: axis with slice numbers
 
 
-    ed = py3DSeedEditor(img)
+    ed = sed3(img)
     ed.show()
     selected_seeds = ed.seeds
 
@@ -431,7 +431,7 @@ if __name__ == "__main__":
     logger.addHandler(ch)
 
     # input parser
-    parser = argparse.ArgumentParser(description='Segment vessels from liver. For example call py3DSeedEditor -f lena')
+    parser = argparse.ArgumentParser(description='Segment vessels from liver. For example call sed3 -f lena')
     parser.add_argument(
         '-f', '--filename',
         # default = '../jatra/main/step.mat',
@@ -483,7 +483,7 @@ if __name__ == "__main__":
         # zde by byl prostor pro ruční (interaktivní) zvolení prahu z klávesnice
         # tě ebo jinak
 
-    pyed = py3DSeedEditor(data)
+    pyed = sed3(data)
     output = pyed.show()
 
     scipy.io.savemat(args.outputfile, {'data': output})
