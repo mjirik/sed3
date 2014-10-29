@@ -17,10 +17,11 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib.widgets import Slider, Button, RadioButtons
+from matplotlib.widgets import Slider, Button
 
 
 class sed3:
+
     """ Viewer and seed editor for 2D and 3D data.
 
     sed3(img, ...)
@@ -39,7 +40,8 @@ class sed3:
 
     """
     # if data.shape != segmentation.shape:
-    #    raise Exception('Input size error','Shape if input data and segmentation must be same')
+    # raise Exception('Input size error','Shape if input data and segmentation
+    # must be same')
 
     def __init__(
         self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
@@ -105,7 +107,8 @@ class sed3:
         # user interface look
 
         axcolor = 'lightgoldenrodyellow'
-        ax_actual_slice = self.fig.add_axes([0.2, 0.2, 0.6, 0.03], axisbg=axcolor)
+        ax_actual_slice = self.fig.add_axes(
+            [0.2, 0.2, 0.6, 0.03], axisbg=axcolor)
         self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0,
                                           self.imgshape[2], valinit=initslice)
 
@@ -117,10 +120,10 @@ class sed3:
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
-
 # delete seeds
         self.ax_delete_seeds = self.fig.add_axes([0.2, 0.1, 0.1, 0.075])
-        self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_delete'])
+        self.btn_delete = Button(
+            self.ax_delete_seeds, self.texts['btn_delete'])
         self.btn_delete.on_clicked(self.callback_delete)
 
 # close button
@@ -143,7 +146,7 @@ class sed3:
 
     def _rotate_end(self, data, zaxis):
         if data != None:
-            if self.rotated_back == False:
+            if self.rotated_back is False:
                 if zaxis == 0:
                     data = np.transpose(data, (2, 0, 1))
                 elif zaxis == 2:
@@ -180,7 +183,8 @@ class sed3:
                 # exception catch problem with none object in image
                 # ctr =
                 self.ax.contour(
-                    self.contour[:, :, int(self.actual_slice)], 1, linewidths=2)
+                    self.contour[:, :, int(self.actual_slice)], 1,
+                    linewidths=2)
             except:
                 pass
 
@@ -250,10 +254,9 @@ class sed3:
         # self.show_slice()
         # print self.actual_slice
 
-
 # malování -------------------
     def on_press(self, event):
-        'on but-ton press we will see if the mouse is over us and store some data'
+        'on but-ton press we will see if the mouse is over us and store data'
         if event.inaxes != self.ax:
             return
         # contains, attrd = self.rect.contains(event)
@@ -308,11 +311,11 @@ class sed3:
 
     def set_seeds(self, px, py, pz, value=1, voxelsizemm=[1, 1, 1],
                   cursorsizemm=[1, 1, 1]):
-        assert len(px) == len(py), 'px and py describes a point, their size must be same'
+        assert len(px) == len(
+            py), 'px and py describes a point, their size must be same'
 
         for i, item in enumerate(px):
             self.seeds[int(item), int(py[i]), int(pz)] = value
-
 
 # @todo
     def get_seed_sub(self, label):
@@ -333,6 +336,7 @@ class sed3:
 
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
+
     def test_t(self):
         pass
 
@@ -424,14 +428,16 @@ if __name__ == "__main__":
     # logging.basicConfig(format='%(asctime)s %(message)s')
     logging.basicConfig(format='%(message)s')
 
-    formatter = logging.Formatter("%(levelname)-5s [%(module)s:%(funcName)s:%(lineno)d] %(message)s")
+    formatter = logging.Formatter(
+        "%(levelname)-5s [%(module)s:%(funcName)s:%(lineno)d] %(message)s")
     # add formatter to ch
     ch.setFormatter(formatter)
 
     logger.addHandler(ch)
 
     # input parser
-    parser = argparse.ArgumentParser(description='Segment vessels from liver. For example call sed3 -f lena')
+    parser = argparse.ArgumentParser(
+        description='Segment vessels from liver. Try call sed3 -f lena')
     parser.add_argument(
         '-f', '--filename',
         # default = '../jatra/main/step.mat',
@@ -480,7 +486,8 @@ if __name__ == "__main__":
         # zakomentovat
         # pdb.set_trace();
 
-        # zde by byl prostor pro ruční (interaktivní) zvolení prahu z klávesnice
+        # zde by byl prostor pro ruční (interaktivní) zvolení prahu z
+        # klávesnice
         # tě ebo jinak
 
     pyed = sed3(data)
