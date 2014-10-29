@@ -344,7 +344,7 @@ class Tests(unittest.TestCase):
         self.segmcube = np.zeros(datashape)
         self.segmcube[30:70, 40:60, 5:15] = 1
 
-        self.ed = py3DSeedEditor(self.rnddata)
+        self.ed = sed3(self.rnddata)
         # ed.show()
         # selected_seeds = ed.seeds
 

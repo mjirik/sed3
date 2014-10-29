@@ -8,7 +8,14 @@ py3DSeedEditor
 Example
 =======
 
-    ed = py3DSeedEditor(img)
+    import sed3
+    import numpy as np
+
+    img = np.zeros([20,20,30])
+    img[3:6, 2:7, :11:25] = 1
+    img[9:16, 3:8, :8:14] = 2
+
+    ed = sed3.sed3(img)
     ed.show()
     selected_seeds = ed.seeds
 
@@ -19,4 +26,4 @@ Install notes
 
     sudo apt-get install python-matplotlib
     
-    pip install py3DSeedEditor
+    pip install sed3
