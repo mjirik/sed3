@@ -1,9 +1,9 @@
-py3DSeedEditor
-==============
+sed3
+====
 
 3D viewer and seed editor
 
-
+[![PyPI version](https://badge.fury.io/py/sed3.svg)](http://badge.fury.io/py/sed3)
 
 Example
 =======
