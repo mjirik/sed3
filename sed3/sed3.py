@@ -47,7 +47,7 @@ class sed3:
         self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
         cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
         mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-        windowW=[], windowC=[]
+        windowW=[], windowC=[], show=False
     ):
         self.fig = plt.figure()
 
@@ -132,6 +132,8 @@ class sed3:
         self.btn_delete.on_clicked(self.callback_close)
 
         self.draw_slice()
+        if show:
+            self.show()
 
     def _rotate_start(self, data, zaxis):
         if data != None:
