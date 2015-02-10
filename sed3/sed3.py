@@ -74,7 +74,7 @@ class sed3:
         self.actual_slice = initslice
         self.colorbar = colorbar
         self.cmap = cmap
-        if seeds == None:
+        if seeds is None:
             self.seeds = np.zeros(self.imgshape, np.int8)
         else:
             self.seeds = seeds
@@ -136,7 +136,7 @@ class sed3:
             self.show()
 
     def _rotate_start(self, data, zaxis):
-        if data != None:
+        if data is not None:
             if zaxis == 0:
                 data = np.transpose(data, (1, 2, 0))
             elif zaxis == 2:
@@ -147,7 +147,7 @@ class sed3:
         return data
 
     def _rotate_end(self, data, zaxis):
-        if data != None:
+        if data is not None:
             if self.rotated_back is False:
                 if zaxis == 0:
                     data = np.transpose(data, (2, 0, 1))
@@ -180,7 +180,7 @@ class sed3:
         # vykreslení okraje
         # X,Y = np.meshgrid(self.imgshape[0], self.imgshape[1])
 
-        if self.contour != None:
+        if self.contour is not None:
             try:
                 # exception catch problem with none object in image
                 # ctr =
