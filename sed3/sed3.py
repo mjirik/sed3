@@ -8,6 +8,8 @@ sys.path.append("./src/")
 # pdb.set_trace();
 
 import scipy.io
+import math
+import copy
 
 import logging
 logger = logging.getLogger(__name__)
@@ -186,6 +188,7 @@ class sed3:
                 # ctr =
                 self.ax.contour(
                     self.contour[:, :, int(self.actual_slice)], 1,
+                    levels=[0.5, 1.5, 2.5],
                     linewidths=2)
             except:
                 pass
@@ -290,7 +293,7 @@ class sed3:
         if btn == 1:
             color = 'r'
         elif btn == 2:
-            color = 'b'
+            color = 'b'  # noqa
 
         # plt.axes(self.ax)
         # plt.plot(x0, y0)
@@ -332,9 +335,120 @@ class sed3:
         return self.img[self.seeds == label]
 
 
+def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=0,
+                shape=None):
+    """
+    Show slices as tiled image
+
+    :param data3d: Input data
+    :param contour: Data for contouring
+    :param seeds: Seed data
+    :param axis: Axis for sliceing
+    :param slice
+    """
+
+    number_of_slices = data3d.shape[axis]
+    # square image
+#     nn = int(math.ceil(number_of_slices ** 0.5))
+
+#     sh = [nn, nn]
+
+    # 4:3 image
+    sh = shape
+    if sh is None:
+        na = int(math.ceil(number_of_slices * 16.0 / 9.0)**0.5)
+        nb = int(math.ceil(float(number_of_slices) / na))
+        sh = [nb, na]
+
+    dsh = __get_slice(data3d, 0, axis).shape
+    slimsh = [int(dsh[0]*sh[0]), int(dsh[1] * sh[1])]
+    slim = np.zeros(slimsh, dtype=data3d.dtype)
+    slco = None
+    slse = None
+    if seeds is not None:
+        slse = np.zeros(slimsh, dtype=seeds.dtype)
+    if contour is not None:
+        slco = np.zeros(slimsh, dtype=contour.dtype)
+#         slse =
+#     f, axarr = plt.subplots(sh[0], sh[1])
+
+    for i in range(0, number_of_slices):
+        cont = None
+        seeds2d = None
+        im2d = __get_slice(data3d, i, axis)
+        if contour is not None:
+            cont = __get_slice(contour, i, axis)
+            slco = __put_slice_in_slim(slco, cont, sh, i)
+        if seeds is not None:
+            seeds2d = __get_slice(seeds, i, axis)
+            slse = __put_slice_in_slim(slse, seeds2d, sh, i)
+#         plt.axis('off')
+#         plt.subplot(sh[0], sh[1], i+1)
+#         plt.subplots_adjust(wspace=0, hspace=0)
+
+        slim = __put_slice_in_slim(slim, im2d, sh, i)
+#         show_slice(im2d, cont, seeds2d)
+    plt.axis('off')
+    show_slice(slim, slco, slse)
+    plt.show()
+
+#         a, b = np.unravel_index(i, sh)
+
+#     pass
+
+
+def __get_slice(data, slice_number, axis=0):
+    if axis == 0:
+        return data[slice_number, :, :]
+    elif axis == 1:
+        return data[:, slice_number, :]
+    elif axis == 2:
+        return data[:, :, slice_number]
+    else:
+        print "axis number error"
+        return None
+
+
+def __put_slice_in_slim(slim, dataim, sh, i):
+    """
+    put one small slice as a tile in a big image
+    """
+    a, b = np.unravel_index(int(i), sh)
+
+    st0 = int(dataim.shape[0] * a)
+    st1 = int(dataim.shape[1] * b)
+    sp0 = int(st0 + dataim.shape[0])
+    sp1 = int(st1 + dataim.shape[1])
+
+    slim[
+        st0:sp0,
+        st1:sp1
+    ] = dataim
+
+    return slim
+
+
+def show_slice(data2d, contour2d=None, seeds2d=None):
+    import copy as cp
+    # Show results
+    colormap = cp.copy(plt.cm.get_cmap('brg'))
+    colormap._init()
+    colormap._lut[:1:, 3] = 0
+
+    plt.imshow(data2d, cmap='gray', interpolation='none')
+    if contour2d is not None:
+        plt.contour(contour2d, levels=[0.5, 1.5, 2.5])
+    if seeds2d is not None:
+        # Show results
+        colormap = copy.copy(plt.cm.get_cmap('brg'))
+        colormap._init()
+        colormap._lut[0, 3] = 0
+
+        plt.imshow(seeds2d, cmap=colormap, interpolation='none')
 # self.rect.figure.canvas.draw()
 
     # return data
+
 
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
