@@ -50,6 +50,7 @@ class sed3:
         windowW=[], windowC=[], show=False
     ):
         self.fig = plt.figure()
+        img = __import_data(img)
 
         if len(img.shape) == 2:
             imgtmp = img
@@ -330,6 +331,19 @@ class sed3:
     def get_seed_val(self, label):
         """ Return data values for specific seed label"""
         return self.img[self.seeds == label]
+
+
+def __import_data(data):
+    """
+    import ndarray or SimpleITK data
+    """
+    try:
+        import SimpleITK as sitk
+        if type(data) is sitk.SimpleITK.Image:
+            data = sitk.GetArrayFromImage(data)
+    except:
+        pass
+    return data
 
 
 # self.rect.figure.canvas.draw()
