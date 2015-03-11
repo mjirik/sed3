@@ -348,6 +348,10 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=0,
     :param slice
     """
 
+    data3d = __import_data(data3d)
+    contour = __import_data(contour)
+    seeds = __import_data(seeds)
+
     number_of_slices = data3d.shape[axis]
     # square image
 #     nn = int(math.ceil(number_of_slices ** 0.5))
