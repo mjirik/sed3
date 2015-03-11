@@ -336,7 +336,7 @@ class sed3:
         return self.img[self.seeds == label]
 
 
-def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=0,
+def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
                 shape=None):
     """
     Show slices as tiled image
@@ -345,7 +345,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=0,
     :param contour: Data for contouring
     :param seeds: Seed data
     :param axis: Axis for sliceing
-    :param slice
+    :param slice_step: Show each "slice_step"-th slice
     """
 
     data3d = __import_data(data3d, axis=axis, slice_step=slice_step)
