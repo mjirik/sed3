@@ -52,7 +52,7 @@ class sed3:
         windowW=[], windowC=[], show=False
     ):
         self.fig = plt.figure()
-        img = __import_data(img)
+        img = _import_data(img, axis=0, slice_step=1)
 
         if len(img.shape) == 2:
             imgtmp = img
@@ -337,7 +337,7 @@ class sed3:
 
 
 def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
-                shape=None):
+                shape=None, show=True):
     """
     Show slices as tiled image
 
@@ -348,9 +348,9 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
     :param slice_step: Show each "slice_step"-th slice
     """
 
-    data3d = __import_data(data3d, axis=axis, slice_step=slice_step)
-    contour = __import_data(contour, axis=axis, slice_step=slice_step)
-    seeds = __import_data(seeds, axis=axis, slice_step=slice_step)
+    data3d = _import_data(data3d, axis=axis, slice_step=slice_step)
+    contour = _import_data(contour, axis=axis, slice_step=slice_step)
+    seeds = _import_data(seeds, axis=axis, slice_step=slice_step)
 
     number_of_slices = data3d.shape[axis]
     # square image
@@ -395,7 +395,8 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
 #         show_slice(im2d, cont, seeds2d)
     plt.axis('off')
     show_slice(slim, slco, slse)
-    plt.show()
+    if show:
+        plt.show()
 
 #         a, b = np.unravel_index(i, sh)
 
@@ -433,6 +434,14 @@ def __put_slice_in_slim(slim, dataim, sh, i):
     return slim
 
 
+# def show():
+#     plt.show()
+# \
+#
+# def close():
+#     plt.close()
+
+
 def show_slice(data2d, contour2d=None, seeds2d=None):
     import copy as cp
     # Show results
@@ -462,7 +471,7 @@ def __select_slices(data, axis, slice_step):
     return data
 
 
-def __import_data(data, axis, slice_step):
+def _import_data(data, axis, slice_step):
     """
     import ndarray or SimpleITK data
     """
