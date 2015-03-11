@@ -52,6 +52,7 @@ class sed3:
         windowW=[], windowC=[], show=False
     ):
         self.fig = plt.figure()
+        img = __import_data(img)
 
         if len(img.shape) == 2:
             imgtmp = img
@@ -445,6 +446,21 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
         colormap._lut[0, 3] = 0
 
         plt.imshow(seeds2d, cmap=colormap, interpolation='none')
+
+
+def __import_data(data):
+    """
+    import ndarray or SimpleITK data
+    """
+    try:
+        import SimpleITK as sitk
+        if type(data) is sitk.SimpleITK.Image:
+            data = sitk.GetArrayFromImage(data)
+    except:
+        pass
+    return data
+
+
 # self.rect.figure.canvas.draw()
 
     # return data
