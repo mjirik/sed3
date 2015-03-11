@@ -1,0 +1,18 @@
+language: python
+python:
+  #  - "2.6"
+  - "2.7"
+  # - "3.2"
+  # - "3.3"
+  # - "3.4"
+virtualenv:
+  system_site_packages: true
+before_install:
+    - sudo apt-get install -qq $(< requirements_apt.txt)
+# command to install dependencies
+install:
+    - "pip install -r requirements_pip.txt"
+# command to run tests
+script: nosetests --with-coverage --cover-package=sed3
+after_success:
+    - coveralls
