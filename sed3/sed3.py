@@ -348,9 +348,9 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=0,
     :param slice
     """
 
-    data3d = __import_data(data3d)
-    contour = __import_data(contour)
-    seeds = __import_data(seeds)
+    data3d = __import_data(data3d, axis=axis, slice_step=slice_step)
+    contour = __import_data(contour, axis=axis, slice_step=slice_step)
+    seeds = __import_data(seeds, axis=axis, slice_step=slice_step)
 
     number_of_slices = data3d.shape[axis]
     # square image
@@ -452,7 +452,17 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
         plt.imshow(seeds2d, cmap=colormap, interpolation='none')
 
 
-def __import_data(data):
+def __select_slices(data, axis, slice_step):
+    if axis == 0:
+        data = data[::slice_step, :, :]
+    if axis == 1:
+        data = data[:, ::slice_step, :]
+    if axis == 2:
+        data = data[:, :, ::slice_step]
+    return data
+
+
+def __import_data(data, axis, slice_step):
     """
     import ndarray or SimpleITK data
     """
@@ -462,6 +472,8 @@ def __import_data(data):
             data = sitk.GetArrayFromImage(data)
     except:
         pass
+
+    data = __select_slices(data, axis, slice_step)
     return data
 
 
