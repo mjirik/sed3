@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/mjirik/sed3.svg?branch=master)](https://travis-ci.org/mjirik/sed3)
+[![Coverage Status](https://coveralls.io/repos/mjirik/sed3/badge.svg)](https://coveralls.io/r/mjirik/sed3)
 [![PyPI version](https://badge.fury.io/py/sed3.svg)](http://badge.fury.io/py/sed3)
 
 sed3
