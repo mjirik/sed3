@@ -113,7 +113,8 @@ class sed3:
         ax_actual_slice = self.fig.add_axes(
             [0.2, 0.2, 0.6, 0.03], axisbg=axcolor)
         self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0,
-                                          self.imgshape[2], valinit=initslice)
+                                          self.imgshape[2] - 1,
+                                          valinit=initslice)
 
         # conenction to wheel events
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
