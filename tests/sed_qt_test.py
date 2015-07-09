@@ -19,6 +19,7 @@ import sys
 import random
 
 import os
+import numpy as np
 # my_site = os.path.join(os.environ['HOME'] , "projects/sed3/")
 # sys.path.insert(0, my_site)
 # class Window(QtGui.QDialog):
@@ -60,10 +61,9 @@ class FailingExample(QtGui.QWidget):
         # QtCore.pyqtRemoveInputHook()
         # import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
 
-        pass
     def callback_close(self, sss):
         print "callback222"
-        print sss.seeds
+        print np.nonzero(sss.seeds)
 
 # def callback_close(sss):
 #     print "callback"
@@ -142,7 +142,6 @@ class Example(QtGui.QWidget):
 class TemplateTest(unittest.TestCase):
 
     @attr('interactive')
-
     def test_qt(self):
         # import sed3
         # import numpy as np
