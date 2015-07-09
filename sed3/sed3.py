@@ -34,6 +34,9 @@ class sed3:
     colorbar: True/False, default is True
     cmap: colormap
     zaxis: axis with slice numbers
+    show: (True/False) automatic call show() function
+    sed3_on_close: callback function on close
+
 
 
     ed = sed3(img)
@@ -49,8 +52,10 @@ class sed3:
         self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
         cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
         mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-        windowW=[], windowC=[], show=False
+        windowW=[], windowC=[], show=False, sed3_on_close=None
     ):
+
+        self.sed3_on_close = sed3_on_close
         self.fig = plt.figure()
         img = _import_data(img, axis=0, slice_step=1)
 
@@ -313,6 +318,8 @@ class sed3:
         self.update_slice()
 
     def callback_close(self, event):
+        if self.sed3_on_close is not None:
+            self.sed3_on_close(self)
         matplotlib.pyplot.clf()
         matplotlib.pyplot.close()
 
