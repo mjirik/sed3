@@ -318,10 +318,10 @@ class sed3:
         self.update_slice()
 
     def callback_close(self, event):
-        if self.sed3_on_close is not None:
-            self.sed3_on_close(self)
         matplotlib.pyplot.clf()
         matplotlib.pyplot.close()
+        if self.sed3_on_close is not None:
+            self.sed3_on_close(self)
 
     def set_seeds(self, px, py, pz, value=1, voxelsizemm=[1, 1, 1],
                   cursorsizemm=[1, 1, 1]):
