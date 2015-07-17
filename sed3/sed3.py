@@ -264,7 +264,7 @@ class sed3:
         return self.prepare_output_data()
 
     def prepare_output_data(self):
-        if rotated_back is False:
+        if self.rotated_back is False:
         # Rotate data in depndecy on zaxis
             self.img = self._rotate_end(self.img, self.zaxis)
             self.seeds = self._rotate_end(self.seeds, self.zaxis)
