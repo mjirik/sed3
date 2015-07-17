@@ -546,6 +546,7 @@ class sed3qt(QtGui.QDialog):
 
     def callback_close(self, sed):
         self.output = sed
+        sed.prepare_output_data()
         self.seeds = sed.seeds
         self.close()
 
