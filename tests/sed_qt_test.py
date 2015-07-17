@@ -20,6 +20,7 @@ import random
 
 import os
 import numpy as np
+plt.ion()
 # my_site = os.path.join(os.environ['HOME'] , "projects/sed3/")
 # sys.path.insert(0, my_site)
 # class Window(QtGui.QDialog):
@@ -160,7 +161,7 @@ class TemplateTest(unittest.TestCase):
         sys.exit(app.exec_())
 
     @attr('interactive')
-    @attr('actual')
+    # @attr('actual')
     def test_qt_failing(self):
         # import sed3
         # import numpy as np
