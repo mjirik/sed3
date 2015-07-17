@@ -20,13 +20,28 @@ import random
 
 import os
 import numpy as np
-plt.ion()
+# plt.ion()
 # my_site = os.path.join(os.environ['HOME'] , "projects/sed3/")
 # sys.path.insert(0, my_site)
 # class Window(QtGui.QDialog):
 #     def __init__(self, parent=None):
 #         super(Window, self).__init__(parent)
 #         self.figure = plt.figure
+class Sed3Qt(QtGui.QWidget):
+    def __init__(self, params**):
+
+        ed = sed3.sed3(params**)
+        ed.sed3_on_close = self.callback_close
+        ed.show()
+        self.output = None
+
+    def callback_close(self, sed):
+        self.output = sed
+
+
+
+
+
 class FailingExample(QtGui.QWidget):
     """
     sed3 by měl zastavit po řádku ed.show() 
