@@ -61,20 +61,19 @@ class FailingExample(QtGui.QWidget):
         img[6:9, 2:7, 1:5] = 1
         img[7:9, 3:9, 8:14] = 2
 
-        ed = sed3.sed3qt.Sed3Qt()
-        ed.set_params(img)
+        ed = sed3.sed3qt.sed3qt(img)
+        # ed.set_params(img)
         
         if ed.exec_():
             print "konec edu"
             vals = ed.o
             print vals.seeds
-            import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
 
 
+        print np.nonzero(ed.seeds)
         # ed = sed3.sed3(img)
         # ed.sed3_on_close = self.callback_close
         # ed.show()
-        import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
 
         print "konec sed3"
         # QtCore.pyqtRemoveInputHook()
@@ -178,9 +177,9 @@ class TemplateTest(unittest.TestCase):
         main.show()
         sys.exit(app.exec_())
 
-    # @attr('interactive')
-    # @attr('actual')
-    def test_qt_failing(self):
+    @attr('interactive')
+    @attr('actual')
+    def test_sed3_qt(self):
         # import sed3
         # import numpy as np
         #

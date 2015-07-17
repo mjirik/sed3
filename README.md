@@ -34,6 +34,24 @@ Example 2
 
     sed3.show_slices(img)
 
+Example 3
+=======
+
+    import sed3qt
+    import numpy as np
+
+    from PyQt4.QtGui import QApplication
+
+    img = np.zeros([10, 10, 15])
+    img[6:9, 2:7, 1:5] = 1
+    img[7:9, 3:9, 8:14] = 2
+
+
+    app = QApplication([])
+    ed = sed3qt.sed3qt(img)
+    ed.exec_()
+    print ed.seeds
+
 Install notes 
 =============
 
