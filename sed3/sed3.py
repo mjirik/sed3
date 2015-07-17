@@ -539,7 +539,7 @@ class sed3qt(QtGui.QDialog):
         # import sed3.sed3
 
         params["figure"] = self.figure 
-        self.sed = sed3.sed3(*pars, **params)
+        self.sed = sed3(*pars, **params)
         self.sed.sed3_on_close = self.callback_close
         # ed.show()
         self.output = None
