@@ -27,16 +27,6 @@ import numpy as np
 #     def __init__(self, parent=None):
 #         super(Window, self).__init__(parent)
 #         self.figure = plt.figure
-class Sed3Qt(QtGui.QWidget):
-    def __init__(self, params**):
-
-        ed = sed3.sed3(params**)
-        ed.sed3_on_close = self.callback_close
-        ed.show()
-        self.output = None
-
-    def callback_close(self, sed):
-        self.output = sed
 
 
 
@@ -64,15 +54,28 @@ class FailingExample(QtGui.QWidget):
     def buttonClicked(self):
         print "button"
         import sed3
+        import sed3.sed3qt
         import numpy as np
 
         img = np.zeros([10, 10, 15])
         img[6:9, 2:7, 1:5] = 1
         img[7:9, 3:9, 8:14] = 2
 
-        ed = sed3.sed3(img)
-        ed.sed3_on_close = self.callback_close
-        ed.show()
+        ed = sed3.sed3qt.Sed3Qt()
+        ed.set_params(img)
+        
+        if ed.exec_():
+            print "konec edu"
+            vals = ed.o
+            print vals.seeds
+            import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
+
+
+        # ed = sed3.sed3(img)
+        # ed.sed3_on_close = self.callback_close
+        # ed.show()
+        import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
+
         print "konec sed3"
         # QtCore.pyqtRemoveInputHook()
         # import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
@@ -175,7 +178,7 @@ class TemplateTest(unittest.TestCase):
         main.show()
         sys.exit(app.exec_())
 
-    @attr('interactive')
+    # @attr('interactive')
     # @attr('actual')
     def test_qt_failing(self):
         # import sed3

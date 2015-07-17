@@ -22,6 +22,7 @@ import matplotlib
 from matplotlib.widgets import Slider, Button
 
 
+
 class sed3:
 
     """ Viewer and seed editor for 2D and 3D data.
@@ -52,11 +53,15 @@ class sed3:
         self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
         cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
         mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-        windowW=[], windowC=[], show=False, sed3_on_close=None
+        windowW=[], windowC=[], show=False, sed3_on_close=None, figure=None
     ):
 
+        
         self.sed3_on_close = sed3_on_close
-        self.fig = plt.figure()
+        if figure is None:
+            self.fig = plt.figure()
+        else:
+            self.fig = figure
         img = _import_data(img, axis=0, slice_step=1)
 
         if len(img.shape) == 2:
@@ -248,11 +253,16 @@ class sed3:
         """ Function run viewer window.
         """
         plt.show()
+
+        return self.prepare_output_data()
+
+    def prepare_output_data(self):
+        if rotated_back is False:
         # Rotate data in depndecy on zaxis
-        self.img = self._rotate_end(self.img, self.zaxis)
-        self.seeds = self._rotate_end(self.seeds, self.zaxis)
-        self.contour = self._rotate_end(self.contour, self.zaxis)
-        self.rotated_back = True
+            self.img = self._rotate_end(self.img, self.zaxis)
+            self.seeds = self._rotate_end(self.seeds, self.zaxis)
+            self.contour = self._rotate_end(self.contour, self.zaxis)
+            self.rotated_back = True
         return self.seeds
 
     def on_scroll(self, event):
