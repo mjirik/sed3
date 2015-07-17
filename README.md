@@ -48,7 +48,7 @@ Example 3
 
 
     app = QApplication([])
-    ed = sed3qt.sed3qt(img)
+    ed = sed3.sed3qt(img)
     ed.exec_()
     print ed.seeds
 
