@@ -65,6 +65,7 @@ class sed3:
 
         
         self.sed3_on_close = sed3_on_close
+        self.show_fcn = plt.show
         if figure is None:
             self.fig = plt.figure()
         else:
@@ -259,7 +260,8 @@ class sed3:
     def show(self):
         """ Function run viewer window.
         """
-        plt.show()
+        self.show_fcn()
+        # plt.show()\
 
         return self.prepare_output_data()
 
@@ -549,6 +551,9 @@ class sed3qt(QtGui.QDialog):
         sed.prepare_output_data()
         self.seeds = sed.seeds
         self.close()
+
+    def show(self):
+        return self.sed.show_fcn()
 
     def get_values(self):
         return self.sed

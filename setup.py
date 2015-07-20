@@ -11,8 +11,8 @@ setup(
     description='3D viewer and editor of color seeds',
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
-    # http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.1.4',
+    # # http://packaging.python.org/en/latest/tutorial.html#version
+    version='1.1.7',
     url='https://github.com/mjirik/py3DSeedEditor',
     author='Miroslav Jirik',
     author_email='miroslav.jirik@gmail.com',
