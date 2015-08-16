@@ -57,7 +57,7 @@ setup(
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=['matplotlib', 'pyyaml', 'scipy'],
     tests_require=['nose', 'mock'],
-    test_suite=['nose.collector'],
+    test_suite='nose.collector',
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
