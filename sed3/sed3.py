@@ -3,6 +3,7 @@
 
 import unittest
 import sys
+
 sys.path.append("./src/")
 # import pdb
 # pdb.set_trace();
@@ -12,8 +13,8 @@ import math
 import copy
 
 import logging
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 
 import argparse
 import numpy as np
@@ -31,7 +32,6 @@ except:
 
 
 class sed3:
-
     """ Viewer and seed editor for 2D and 3D data.
 
     sed3(img, ...)
@@ -57,13 +57,12 @@ class sed3:
     # must be same')
 
     def __init__(
-        self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
-        cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
-        mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-        windowW=[], windowC=[], show=False, sed3_on_close=None, figure=None
+            self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
+            cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
+            mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
+            windowW=[], windowC=[], show=False, sed3_on_close=None, figure=None
     ):
 
-        
         self.sed3_on_close = sed3_on_close
         self.show_fcn = plt.show
         if figure is None:
@@ -114,7 +113,7 @@ class sed3:
         self.press = None
         self.press2 = None
 
-# language
+        # language
         self.texts = {'btn_delete': 'Delete', 'btn_close': 'Close'}
 
         # iself.fig.subplots_adjust(left=0.25, bottom=0.25)
@@ -137,18 +136,18 @@ class sed3:
         # conenction to wheel events
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
         self.actual_slice_slider.on_changed(self.sliceslider_update)
-# draw
+        # draw
         self.fig.canvas.mpl_connect('button_press_event', self.on_press)
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
-# delete seeds
+        # delete seeds
         self.ax_delete_seeds = self.fig.add_axes([0.2, 0.1, 0.1, 0.075])
         self.btn_delete = Button(
             self.ax_delete_seeds, self.texts['btn_delete'])
         self.btn_delete.on_clicked(self.callback_delete)
 
-# close button
+        # close button
         self.ax_delete_seeds = self.fig.add_axes([0.7, 0.1, 0.1, 0.075])
         self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_close'])
         self.btn_delete.on_clicked(self.callback_close)
@@ -267,7 +266,7 @@ class sed3:
 
     def prepare_output_data(self):
         if self.rotated_back is False:
-        # Rotate data in depndecy on zaxis
+            # Rotate data in depndecy on zaxis
             self.img = self._rotate_end(self.img, self.zaxis)
             self.seeds = self._rotate_end(self.seeds, self.zaxis)
             self.contour = self._rotate_end(self.contour, self.zaxis)
@@ -285,7 +284,7 @@ class sed3:
         # self.show_slice()
         # print self.actual_slice
 
-# malování -------------------
+    # malování -------------------
     def on_press(self, event):
         'on but-ton press we will see if the mouse is over us and store data'
         if event.inaxes != self.ax:
@@ -350,7 +349,8 @@ class sed3:
         for i, item in enumerate(px):
             self.seeds[int(item), int(py[i]), int(pz)] = value
 
-# @todo
+        # @todo
+
     def get_seed_sub(self, label):
         """ Return list of all seeds with specific label
         """
@@ -381,19 +381,19 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
 
     number_of_slices = data3d.shape[axis]
     # square image
-#     nn = int(math.ceil(number_of_slices ** 0.5))
+    #     nn = int(math.ceil(number_of_slices ** 0.5))
 
-#     sh = [nn, nn]
+    #     sh = [nn, nn]
 
     # 4:3 image
     sh = shape
     if sh is None:
-        na = int(math.ceil(number_of_slices * 16.0 / 9.0)**0.5)
+        na = int(math.ceil(number_of_slices * 16.0 / 9.0) ** 0.5)
         nb = int(math.ceil(float(number_of_slices) / na))
         sh = [nb, na]
 
     dsh = __get_slice(data3d, 0, axis).shape
-    slimsh = [int(dsh[0]*sh[0]), int(dsh[1] * sh[1])]
+    slimsh = [int(dsh[0] * sh[0]), int(dsh[1] * sh[1])]
     slim = np.zeros(slimsh, dtype=data3d.dtype)
     slco = None
     slse = None
@@ -401,8 +401,8 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
         slse = np.zeros(slimsh, dtype=seeds.dtype)
     if contour is not None:
         slco = np.zeros(slimsh, dtype=contour.dtype)
-#         slse =
-#     f, axarr = plt.subplots(sh[0], sh[1])
+    #         slse =
+    #     f, axarr = plt.subplots(sh[0], sh[1])
 
     for i in range(0, number_of_slices):
         cont = None
@@ -414,18 +414,19 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
         if seeds is not None:
             seeds2d = __get_slice(seeds, i, axis)
             slse = __put_slice_in_slim(slse, seeds2d, sh, i)
-#         plt.axis('off')
-#         plt.subplot(sh[0], sh[1], i+1)
-#         plt.subplots_adjust(wspace=0, hspace=0)
+        #         plt.axis('off')
+        #         plt.subplot(sh[0], sh[1], i+1)
+        #         plt.subplots_adjust(wspace=0, hspace=0)
 
         slim = __put_slice_in_slim(slim, im2d, sh, i)
-#         show_slice(im2d, cont, seeds2d)
+    #         show_slice(im2d, cont, seeds2d)
     plt.axis('off')
     show_slice(slim, slco, slse)
     if show:
         plt.show()
 
-#         a, b = np.unravel_index(i, sh)
+
+# a, b = np.unravel_index(i, sh)
 
 #     pass
 
@@ -454,8 +455,8 @@ def __put_slice_in_slim(slim, dataim, sh, i):
     sp1 = int(st1 + dataim.shape[1])
 
     slim[
-        st0:sp0,
-        st1:sp1
+    st0:sp0,
+    st1:sp1
     ] = dataim
 
     return slim
@@ -515,13 +516,12 @@ def _import_data(data, axis, slice_step):
 
 # self.rect.figure.canvas.draw()
 
-    # return data
+# return data
 
 class sed3qt(QtGui.QDialog):
     def __init__(self, *pars, **params):
-    # def __init__(self,parent=None):
+        # def __init__(self,parent=None):
         parent = None
-
 
         QtGui.QDialog.__init__(self, parent)
         # super(Window, self).__init__(parent)
@@ -530,17 +530,17 @@ class sed3qt(QtGui.QDialog):
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
-# set the layout
+        # set the layout
         layout = QtGui.QVBoxLayout()
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
         # layout.addWidget(self.button)
         self.setLayout(layout)
 
-    # def set_params(self, *pars, **params):
+        # def set_params(self, *pars, **params):
         # import sed3.sed3
 
-        params["figure"] = self.figure 
+        params["figure"] = self.figure
         self.sed = sed3(*pars, **params)
         self.sed.sed3_on_close = self.callback_close
         # ed.show()
@@ -558,9 +558,9 @@ class sed3qt(QtGui.QDialog):
     def get_values(self):
         return self.sed
 
+
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
-
     def test_t(self):
         pass
 
@@ -635,20 +635,21 @@ def generate_data(shp=[16, 20, 24]):
     """ Generating data """
 
     x = np.ones(shp)
-# inserting box
+    # inserting box
     x[4:-4, 6:-2, 1:-6] = -1
     x_noisy = x + np.random.normal(0, 0.6, size=x.shape)
     return x_noisy
+
 
 # --------------------------main------------------------------
 if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel(logging.WARNING)
-# při vývoji si necháme vypisovat všechny hlášky
+    # při vývoji si necháme vypisovat všechny hlášky
     # logger.setLevel(logging.DEBUG)
 
     ch = logging.StreamHandler()
-#   output configureation
+    #   output configureation
     # logging.basicConfig(format='%(asctime)s %(message)s')
     logging.basicConfig(format='%(message)s')
 
@@ -693,6 +694,7 @@ if __name__ == "__main__":
         data = generate_data()
     elif args.filename == 'lena':
         from scipy import misc
+
         data = misc.lena()
     else:
         #   load all
@@ -719,3 +721,68 @@ if __name__ == "__main__":
 
     scipy.io.savemat(args.outputfile, {'data': output})
     pyed.get_seed_val(1)
+
+
+def index_to_coords(index, shape):
+    '''convert index to coordinates given the shape'''
+    coords = []
+    for i in xrange(1, len(shape)):
+        divisor = int(np.product(shape[i:]))
+        value = index // divisor
+        coords.append(value)
+        index -= value * divisor
+    coords.append(index)
+    return tuple(coords)
+
+
+sh = np.asarray([3, 4])
+
+
+def slices(img, shape=[3, 4]):
+    """
+    create tiled image with multiple slices
+    :param img:
+    :param shape:
+    :return:
+    """
+    sh = np.asarray(shape)
+    i_max = np.prod(sh)
+    allimg = np.zeros(img.shape[-2:] * sh)
+
+    for i in range(0, i_max):
+        # i = 0
+        islice = round((img.shape[0] / float(i_max)) * i)
+        #         print islice
+        imgi = img[islice, :, :]
+        coords = index_to_coords(i, sh)
+        aic = np.asarray(img.shape[-2:]) * coords
+
+        allimg[aic[0]:aic[0] + imgi.shape[-2], aic[1]:aic[1] + imgi.shape[-1]] = imgi
+
+    #     plt.imshow(imgi)
+    #     print imgi.shape
+    #     print img.shape
+    return allimg
+
+
+# sz = img.shape
+# np.zeros()
+def sed2(img, contour=None, shape=[3, 4]):
+    """
+    plot tiled image of multiple slices
+
+    :param img:
+    :param contour:
+    :param shape:
+    :return:
+    """
+    """
+    :param img:
+    :param contour:
+    :param shape:
+    :return:
+    """
+
+    plt.imshow(slices(img, shape), cmap='gray')
+    if contour is not None:
+        plt.contour(slices(contour, shape))
