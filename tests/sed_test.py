@@ -16,6 +16,22 @@ from nose.plugins.attrib import attr
 
 class TemplateTest(unittest.TestCase):
 
+    def testSed2(self):
+        import sed3
+        import numpy as np
+
+        img = np.random.randint(0,20, [10, 10, 15])
+        img[6:9, 2:7, 1:5] += 40
+        img[7:9, 3:9, 8:14] += 60
+
+        seg= np.zeros([10, 10, 15])
+        seg[6:9, 2:7, 1:5] = 1
+        seg[7:9, 3:9, 8:14] = 2
+
+        ed = sed3.sed2(img, contour=seg)
+        # import matplotlib.pyplot as plt
+        # plt.show()
+
     @attr('interactive')
     def test_interactive_test(self):
         import sed3
