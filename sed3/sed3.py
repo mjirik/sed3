@@ -60,7 +60,7 @@ class sed3:
             self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
             cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
             mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-            windowW=[], windowC=[], show=False, sed3_on_close=None, figure=None
+            windowW=None, windowC=None, show=False, sed3_on_close=None, figure=None
     ):
 
         self.sed3_on_close = sed3_on_close
@@ -98,12 +98,7 @@ class sed3:
             self.seeds = np.zeros(self.imgshape, np.int8)
         else:
             self.seeds = seeds
-        if not (windowW and windowC):
-            self.imgmax = np.max(img)
-            self.imgmin = np.min(img)
-        else:
-            self.imgmax = windowC + (windowW / 2)
-            self.imgmin = windowC - (windowW / 2)
+        self.set_window(windowC, windowW)
 
         """ Mapping mouse button to class number. Default is normal order"""
         self.button_map = mouse_button_map
@@ -117,44 +112,101 @@ class sed3:
         self.texts = {'btn_delete': 'Delete', 'btn_close': 'Close'}
 
         # iself.fig.subplots_adjust(left=0.25, bottom=0.25)
-        self.ax = self.fig.add_axes([0.2, 0.3, 0.7, 0.6])
+        self.ax = self.fig.add_axes([0.1, 0.30, 0.8, 0.6])
 
+        # self.ax_colorbar = self.fig.add_axes([0.9, 0.30, 0.08, 0.6])
         self.draw_slice()
 
         if self.colorbar:
-            self.fig.colorbar(self.imsh)
+            # self.colorbar_obj = self.fig.colorbar(self.imsh)
+            self.colorbar_obj = plt.colorbar(self.imsh, ax=self.ax)
+            self.colorbar_obj.on_mappable_changed(self.imsh)
 
         # user interface look
 
         axcolor = 'lightgoldenrodyellow'
         ax_actual_slice = self.fig.add_axes(
-            [0.2, 0.2, 0.6, 0.03], axisbg=axcolor)
+            [0.2, 0.20, 0.6, 0.03], axisbg=axcolor)
         self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0,
                                           self.imgshape[2] - 1,
                                           valinit=initslice)
 
+        immax = np.max(self.img)
+        immin = np.min(self.img)
+        ax_window_c = self.fig.add_axes(
+            [0.4, 0.12, 0.2, 0.02], axisbg=axcolor)
+        self.window_c_slider = Slider(ax_window_c, 'Center',
+                                          immin,
+                                          immax,
+                                          valinit=float(self.windowC))
+        ax_window_w = self.fig.add_axes(
+            [0.4, 0.16, 0.2, 0.02], axisbg=axcolor)
+        self.window_w_slider = Slider(ax_window_w, 'Width',
+                                      0,
+                                      (immax - immin) * 2,
+                                      valinit=float(self.windowW))
         # conenction to wheel events
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
         self.actual_slice_slider.on_changed(self.sliceslider_update)
+        self.window_c_slider.on_changed(self._on_window_c_change)
+        self.window_w_slider.on_changed(self._on_window_w_change)
         # draw
         self.fig.canvas.mpl_connect('button_press_event', self.on_press)
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
         # delete seeds
-        self.ax_delete_seeds = self.fig.add_axes([0.2, 0.1, 0.1, 0.075])
+        self.ax_delete_seeds = self.fig.add_axes([0.1, 0.1, 0.1, 0.075])
         self.btn_delete = Button(
             self.ax_delete_seeds, self.texts['btn_delete'])
         self.btn_delete.on_clicked(self.callback_delete)
 
         # close button
-        self.ax_delete_seeds = self.fig.add_axes([0.7, 0.1, 0.1, 0.075])
+        self.ax_delete_seeds = self.fig.add_axes([0.8, 0.1, 0.1, 0.075])
         self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_close'])
         self.btn_delete.on_clicked(self.callback_close)
 
         self.draw_slice()
         if show:
             self.show()
+
+    def set_window(self, windowC, windowW):
+        """
+        Sets visualization window
+        :param windowC: window center
+        :param windowW: window width
+        :return:
+        """
+        if not (windowW and windowC):
+            windowW = np.max(self.img) - np.min(self.img)
+            windowC = (np.max(self.img) + np.min(self.img)) / 2.0
+
+        self.imgmax = windowC + (windowW / 2)
+        self.imgmin = windowC - (windowW / 2)
+        self.windowC = windowC
+        self.windowW = windowW
+
+            # self.imgmax = np.max(self.img)
+            # self.imgmin = np.min(self.img)
+            # self.windowC = windowC
+            # self.windowW = windowW
+        # else:
+        #     self.imgmax = windowC + (windowW / 2)
+        #     self.imgmin = windowC - (windowW / 2)
+        #     self.windowC = windowC
+        #     self.windowW = windowW
+
+    def _on_window_w_change(self, windowW):
+        self.set_window(self.windowC, windowW)
+        if self.colorbar:
+            self.colorbar_obj.on_mappable_changed(self.imsh)
+        self.update_slice()
+
+    def _on_window_c_change(self, windowC):
+        self.set_window(windowC, self.windowW)
+        if self.colorbar:
+            self.colorbar_obj.on_mappable_changed(self.imsh)
+        self.update_slice()
 
     def _rotate_start(self, data, zaxis):
         if data is not None:
