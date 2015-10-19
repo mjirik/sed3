@@ -4,23 +4,22 @@
 import unittest
 import sys
 
-sys.path.append("./src/")
-# import pdb
-# pdb.set_trace();
 
 import scipy.io
 import math
 import copy
-
-import logging
-
-logger = logging.getLogger(__name__)
-
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.widgets import Slider, Button
+import traceback
+
+import logging
+logger = logging.getLogger(__name__)
+
+# import pdb
+# pdb.set_trace();
 
 try:
     from PyQt4 import QtGui, QtCore
@@ -207,13 +206,23 @@ class sed3:
     def _on_window_w_change(self, windowW):
         self.set_window(self.windowC, windowW)
         if self.colorbar:
-            self.colorbar_obj.on_mappable_changed(self.imsh)
+            try:
+                self.colorbar_obj.on_mappable_changed(self.imsh)
+            except:
+                traceback.print_exc()
+                logger.warning("with old matplotlib version does not work colorbar redraw")
+
         self.update_slice()
 
     def _on_window_c_change(self, windowC):
         self.set_window(windowC, self.windowW)
         if self.colorbar:
-            self.colorbar_obj.on_mappable_changed(self.imsh)
+            try:
+                self.colorbar_obj.on_mappable_changed(self.imsh)
+            except:
+                traceback.print_exc()
+                logger.warning("with old matplotlib version does not work colorbar redraw")
+
         self.update_slice()
 
     def _rotate_start(self, data, zaxis):
@@ -224,6 +233,7 @@ class sed3:
                 pass
             else:
                 print "problem with zaxis in _rotate_start()"
+                logger.warning("problem with zaxis in _rotate_start()")
 
         return data
 
@@ -236,9 +246,11 @@ class sed3:
                     pass
                 else:
                     print "problem with zaxis in _rotate_start()"
+                    logger.warning("problem with zaxis in _rotate_start()")
 
             else:
                 print "There is a danger in calling show() twice"
+                logger.warning("There is a danger in calling show() twice")
 
         return data
 
@@ -503,6 +515,7 @@ def __get_slice(data, slice_number, axis=0):
     elif axis == 2:
         return data[:, :, slice_number]
     else:
+        logger.error("axis number error")
         print "axis number error"
         return None
 
