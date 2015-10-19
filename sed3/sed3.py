@@ -108,7 +108,8 @@ class sed3:
         self.press2 = None
 
         # language
-        self.texts = {'btn_delete': 'Delete', 'btn_close': 'Close'}
+        self.texts = {'btn_delete': 'Delete', 'btn_close': 'Close',
+                      'btn_view0': "v0", 'btn_view1': "v1", 'btn_view2': "v2"}
 
         # iself.fig.subplots_adjust(left=0.25, bottom=0.25)
         self.ax = self.fig.add_axes([0.1, 0.20, 0.8, 0.75])
@@ -130,9 +131,9 @@ class sed3:
         # user interface look
 
         axcolor = 'lightgoldenrodyellow'
-        ax_actual_slice = self.fig.add_axes(
+        self.ax_actual_slice = self.fig.add_axes(
             [0.15, 0.15, 0.7, 0.03], axisbg=axcolor)
-        self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0,
+        self.actual_slice_slider = Slider(self.ax_actual_slice, 'Slice', 0,
                                           self.imgshape[2] - 1,
                                           valinit=initslice)
 
@@ -178,8 +179,36 @@ class sed3:
         sh = self.img.shape
         self.fig.text(0.20, 0.05, "%ix%ix%i" % (sh[0], sh[1], sh[2]))
         self.draw_slice()
+
+
+        # view0
+        self.ax_v0= self.fig.add_axes([0.05, 0.80, 0.08, 0.075])
+        self.btn_v0 = Button(
+            self.ax_v0, self.texts['btn_view0'])
+        self.btn_v0.on_clicked(self._callback_v0)
+
+        # view1
+        self.ax_v1= self.fig.add_axes([0.05, 0.70, 0.08, 0.075])
+        self.btn_v1 = Button(
+            self.ax_v1, self.texts['btn_view1'])
+        self.btn_v1.on_clicked(self._callback_v1)
+
+        # view2
+        self.ax_v2= self.fig.add_axes([0.05, 0.60, 0.08, 0.075])
+        self.btn_v2 = Button(
+            self.ax_v2, self.texts['btn_view2'])
+        self.btn_v2.on_clicked(self._callback_v2)
         if show:
             self.show()
+
+    def _callback_v0(self, event):
+        self.rotate_to_zaxis(0)
+
+    def _callback_v1(self, event):
+        self.rotate_to_zaxis(1)
+
+    def _callback_v2(self, event):
+        self.rotate_to_zaxis(2)
 
     def set_window(self, windowC, windowW):
         """
@@ -229,11 +258,47 @@ class sed3:
 
         self.update_slice()
 
+    def rotate_to_zaxis(self, new_zaxis):
+        """
+        rotate image to selected axis
+        :param new_zaxis:
+        :return:
+        """
+
+        img = self._rotate_end(self.img, self.zaxis)
+        seeds = self._rotate_end(self.seeds, self.zaxis)
+        contour = self._rotate_end(self.contour, self.zaxis)
+
+        # Rotate data in depndecy on zaxispyplot
+        self.img = self._rotate_start(img, new_zaxis)
+        self.seeds = self._rotate_start(seeds, new_zaxis)
+        self.contour = self._rotate_start(contour, new_zaxis)
+        self.zaxis = new_zaxis
+        # import ipdb
+        # ipdb.set_trace()
+        # self.actual_slice_slider.valmax = self.img.shape[2] - 1
+        self.actual_slice = 0
+        self.rotated_back = False
+
+        # update slicer
+        self.fig.delaxes(self.ax_actual_slice)
+        self.ax_actual_slice.cla()
+        del(self.actual_slice_slider)
+        self.fig.add_axes(self.ax_actual_slice)
+        self.actual_slice_slider = Slider(self.ax_actual_slice, 'Slice', 0,
+                                          self.img.shape[2] - 1,
+                                          valinit=0)
+        self.actual_slice_slider.on_changed(self.sliceslider_update)
+        self.update_slice()
+
     def _rotate_start(self, data, zaxis):
         if data is not None:
             if zaxis == 0:
                 data = np.transpose(data, (1, 2, 0))
+            elif zaxis == 1:
+                data = np.transpose(data, (2, 0, 1))
             elif zaxis == 2:
+                # data = np.transpose(data, (0, 1, 2))
                 pass
             else:
                 print "problem with zaxis in _rotate_start()"
@@ -246,6 +311,8 @@ class sed3:
             if self.rotated_back is False:
                 if zaxis == 0:
                     data = np.transpose(data, (2, 0, 1))
+                elif zaxis == 1:
+                    data = np.transpose(data, (1, 2, 0))
                 elif zaxis == 2:
                     pass
                 else:
