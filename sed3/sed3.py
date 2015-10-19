@@ -137,13 +137,13 @@ class sed3:
         immin = np.min(self.img)
         # axcolor_front = 'darkslategray'
         ax_window_c = self.fig.add_axes(
-            [0.4, 0.05, 0.2, 0.02], axisbg=axcolor)
+            [0.5, 0.05, 0.2, 0.02], axisbg=axcolor)
         self.window_c_slider = Slider(ax_window_c, 'Center',
                                           immin,
                                           immax,
                                           valinit=float(self.windowC))
         ax_window_w = self.fig.add_axes(
-            [0.4, 0.10, 0.2, 0.02], axisbg=axcolor)
+            [0.5, 0.10, 0.2, 0.02], axisbg=axcolor)
         self.window_w_slider = Slider(ax_window_w, 'Width',
                                       0,
                                       (immax - immin) * 2,
