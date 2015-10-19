@@ -121,7 +121,11 @@ class sed3:
         if self.colorbar:
             # self.colorbar_obj = self.fig.colorbar(self.imsh)
             self.colorbar_obj = plt.colorbar(self.imsh, cax=self.ax_colorbar)
-            self.colorbar_obj.on_mappable_changed(self.imsh)
+            try:
+                self.colorbar_obj.on_mappable_changed(self.imsh)
+            except:
+                traceback.print_exc()
+                logger.warning("with old matplotlib version does not work colorbar redraw")
 
         # user interface look
 
