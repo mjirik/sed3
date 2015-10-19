@@ -112,35 +112,38 @@ class sed3:
         self.texts = {'btn_delete': 'Delete', 'btn_close': 'Close'}
 
         # iself.fig.subplots_adjust(left=0.25, bottom=0.25)
-        self.ax = self.fig.add_axes([0.1, 0.30, 0.8, 0.6])
+        self.ax = self.fig.add_axes([0.1, 0.20, 0.8, 0.75])
+        # self.ax.set_axis_off()
+        # self.ax.axis('off')
 
-        # self.ax_colorbar = self.fig.add_axes([0.9, 0.30, 0.08, 0.6])
+        self.ax_colorbar = self.fig.add_axes([0.9, 0.30, 0.02, 0.6])
         self.draw_slice()
 
         if self.colorbar:
             # self.colorbar_obj = self.fig.colorbar(self.imsh)
-            self.colorbar_obj = plt.colorbar(self.imsh, ax=self.ax)
+            self.colorbar_obj = plt.colorbar(self.imsh, cax=self.ax_colorbar)
             self.colorbar_obj.on_mappable_changed(self.imsh)
 
         # user interface look
 
         axcolor = 'lightgoldenrodyellow'
         ax_actual_slice = self.fig.add_axes(
-            [0.2, 0.20, 0.6, 0.03], axisbg=axcolor)
+            [0.15, 0.15, 0.7, 0.03], axisbg=axcolor)
         self.actual_slice_slider = Slider(ax_actual_slice, 'Slice', 0,
                                           self.imgshape[2] - 1,
                                           valinit=initslice)
 
         immax = np.max(self.img)
         immin = np.min(self.img)
+        # axcolor_front = 'darkslategray'
         ax_window_c = self.fig.add_axes(
-            [0.4, 0.12, 0.2, 0.02], axisbg=axcolor)
+            [0.4, 0.05, 0.2, 0.02], axisbg=axcolor)
         self.window_c_slider = Slider(ax_window_c, 'Center',
                                           immin,
                                           immax,
                                           valinit=float(self.windowC))
         ax_window_w = self.fig.add_axes(
-            [0.4, 0.16, 0.2, 0.02], axisbg=axcolor)
+            [0.4, 0.10, 0.2, 0.02], axisbg=axcolor)
         self.window_w_slider = Slider(ax_window_w, 'Width',
                                       0,
                                       (immax - immin) * 2,
@@ -156,16 +159,21 @@ class sed3:
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
         # delete seeds
-        self.ax_delete_seeds = self.fig.add_axes([0.1, 0.1, 0.1, 0.075])
+        self.ax_delete_seeds = self.fig.add_axes([0.05, 0.05, 0.1, 0.075])
         self.btn_delete = Button(
             self.ax_delete_seeds, self.texts['btn_delete'])
         self.btn_delete.on_clicked(self.callback_delete)
 
         # close button
-        self.ax_delete_seeds = self.fig.add_axes([0.8, 0.1, 0.1, 0.075])
+        self.ax_delete_seeds = self.fig.add_axes([0.85, 0.05, 0.1, 0.075])
         self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_close'])
         self.btn_delete.on_clicked(self.callback_close)
 
+        # im shape
+        # self.ax_shape = self.fig.add_axes([0.85, 0.05, 0.1, 0.075])
+        self.fig.text(0.20, 0.10, 'shape')
+        sh = self.img.shape
+        self.fig.text(0.20, 0.05, "%ix%ix%i" % (sh[0], sh[1], sh[2]))
         self.draw_slice()
         if show:
             self.show()
@@ -263,6 +271,11 @@ class sed3:
                     linewidths=2)
             except:
                 pass
+
+        # self.ax.set_axis_off()
+        self.ax.set_xticklabels([])
+        self.ax.set_yticklabels([])
+        # self.ax.set_axis_below(False)
 
         # print ctr
         # import pdb; pdb.set_trace()
@@ -472,7 +485,6 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
 
         slim = __put_slice_in_slim(slim, im2d, sh, i)
     #         show_slice(im2d, cont, seeds2d)
-    plt.axis('off')
     show_slice(slim, slco, slse)
     if show:
         plt.show()
