@@ -56,11 +56,31 @@ class sed3:
     # must be same')
 
     def __init__(
-            self, img, voxelsizemm=[1, 1, 1], initslice=0, colorbar=True,
+            self, img, voxelsize=[1, 1, 1], initslice=0, colorbar=True,
             cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
             mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-            windowW=None, windowC=None, show=False, sed3_on_close=None, figure=None
+            windowW=None, windowC=None, show=False, sed3_on_close=None, figure=None,
+            show_axis=False
     ):
+        """
+
+        :param img:
+        :param voxelsizemm:
+        :param initslice:
+        :param colorbar:
+        :param cmap:
+        :param seeds:
+        :param contour:
+        :param zaxis:
+        :param mouse_button_map:
+        :param windowW:
+        :param windowC:
+        :param show:
+        :param sed3_on_close:
+        :param figure:
+        :param show_axis:
+        :return:
+        """
 
         self.sed3_on_close = sed3_on_close
         self.show_fcn = plt.show
@@ -78,6 +98,8 @@ class sed3:
 
             zaxis = 0
             # pdb.set_trace();
+        self.voxelsize = voxelsize
+        self.actual_voxelsize = copy.copy(voxelsize)
 
         # Rotate data in depndecy on zaxispyplot
         img = self._rotate_start(img, zaxis)
@@ -93,6 +115,7 @@ class sed3:
         self.actual_slice = initslice
         self.colorbar = colorbar
         self.cmap = cmap
+        self.show_axis = show_axis
         if seeds is None:
             self.seeds = np.zeros(self.imgshape, np.int8)
         else:
@@ -112,9 +135,10 @@ class sed3:
                       'btn_view0': "v0", 'btn_view1': "v1", 'btn_view2': "v2"}
 
         # iself.fig.subplots_adjust(left=0.25, bottom=0.25)
-        self.ax = self.fig.add_axes([0.1, 0.20, 0.8, 0.75])
-        # self.ax.set_axis_off()
-        # self.ax.axis('off')
+        if self.show_axis:
+            self.ax = self.fig.add_axes([0.20, 0.25, 0.70, 0.70])
+        else:
+            self.ax = self.fig.add_axes([0.1, 0.20, 0.8, 0.75])
 
         self.ax_colorbar = self.fig.add_axes([0.9, 0.30, 0.02, 0.6])
         self.draw_slice()
@@ -294,9 +318,17 @@ class sed3:
     def _rotate_start(self, data, zaxis):
         if data is not None:
             if zaxis == 0:
-                data = np.transpose(data, (1, 2, 0))
+                tr =(1, 2, 0)
+                data = np.transpose(data, tr)
+                vs = self.actual_voxelsize
+                if self.actual_voxelsize is not None:
+                    self.actual_voxelsize = [vs[tr[0]], vs[tr[1]], vs[tr[2]]]
             elif zaxis == 1:
-                data = np.transpose(data, (2, 0, 1))
+                tr = (2, 0, 1)
+                data = np.transpose(data, tr)
+                vs = self.actual_voxelsize
+                if self.actual_voxelsize is not None:
+                    self.actual_voxelsize = [vs[tr[0]], vs[tr[1]], vs[tr[2]]]
             elif zaxis == 2:
                 # data = np.transpose(data, (0, 1, 2))
                 pass
@@ -310,9 +342,17 @@ class sed3:
         if data is not None:
             if self.rotated_back is False:
                 if zaxis == 0:
-                    data = np.transpose(data, (2, 0, 1))
+                    tr = (2, 0, 1)
+                    data = np.transpose(data, tr)
+                    vs = self.actual_voxelsize
+                    if self.actual_voxelsize is not None:
+                        self.actual_voxelsize = [vs[tr[0]], vs[tr[1]], vs[tr[2]]]
                 elif zaxis == 1:
-                    data = np.transpose(data, (1, 2, 0))
+                    tr = (1, 2, 0)
+                    data = np.transpose(data, tr)
+                    vs = self.actual_voxelsize
+                    if self.actual_voxelsize is not None:
+                        self.actual_voxelsize = [vs[tr[0]], vs[tr[1]], vs[tr[2]]]
                 elif zaxis == 2:
                     pass
                 else:
@@ -356,9 +396,8 @@ class sed3:
                 pass
 
         # self.ax.set_axis_off()
-        self.ax.set_xticklabels([])
-        self.ax.set_yticklabels([])
         # self.ax.set_axis_below(False)
+        self._ticklabels()
 
         # print ctr
         # import pdb; pdb.set_trace()
@@ -369,6 +408,33 @@ class sed3:
 
         # pdb.set_trace();
         # plt.hold(False)
+    def _ticklabels(self):
+        if self.show_axis and self.actual_voxelsize is not None:
+            print 's:w' \
+                  ''
+            # pass
+
+            print self.actual_voxelsize
+            xmax = self.img.shape[0]
+            ymax = self.img.shape[1]
+            xmaxmm = xmax * self.actual_voxelsize[0]
+            ymaxmm = ymax * self.actual_voxelsize[1]
+            xmm = 10.0**np.floor(np.log10(xmaxmm))
+            ymm = 10.0**np.floor(np.log10(ymaxmm))
+            x = xmm * 1.0 / self.actual_voxelsize[0]
+            y = ymm * 1.0 / self.actual_voxelsize[1]
+            print "x ", xmaxmm, " ", xmm, " ", x
+
+            self.ax.set_xticks([0, x])
+            self.ax.set_xticklabels([0, xmm])
+            self.ax.set_yticks([0, y])
+            self.ax.set_yticklabels([0, ymm])
+            # self.ax.set_yticklabels([13,12])
+
+        else:
+            self.ax.set_xticklabels([])
+            self.ax.set_yticklabels([])
+
 
     def next_slice(self):
         self.actual_slice = self.actual_slice + 1
@@ -830,6 +896,8 @@ if __name__ == "__main__":
         default='output.mat', help='output file name')
     args = parser.parse_args()
 
+    voxelsize = None
+
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
@@ -839,7 +907,8 @@ if __name__ == "__main__":
         unittest.main()
 
     if args.example3d:
-        data = generate_data()
+        data = generate_data([16, 20, 24])
+        voxelsize = [0.1, 1.2, 2.5]
     elif args.filename == 'lena':
         from scipy import misc
 
@@ -864,7 +933,7 @@ if __name__ == "__main__":
         # klávesnice
         # tě ebo jinak
 
-    pyed = sed3(data)
+    pyed = sed3(data, voxelsize=voxelsize)
     output = pyed.show()
 
     scipy.io.savemat(args.outputfile, {'data': output})
