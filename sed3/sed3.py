@@ -410,11 +410,9 @@ class sed3:
         # plt.hold(False)
     def _ticklabels(self):
         if self.show_axis and self.actual_voxelsize is not None:
-            print 's:w' \
                   ''
             # pass
 
-            print self.actual_voxelsize
             xmax = self.img.shape[0]
             ymax = self.img.shape[1]
             xmaxmm = xmax * self.actual_voxelsize[0]
@@ -423,7 +421,6 @@ class sed3:
             ymm = 10.0**np.floor(np.log10(ymaxmm))
             x = xmm * 1.0 / self.actual_voxelsize[0]
             y = ymm * 1.0 / self.actual_voxelsize[1]
-            print "x ", xmaxmm, " ", xmm, " ", x
 
             self.ax.set_xticks([0, x])
             self.ax.set_xticklabels([0, xmm])
