@@ -410,7 +410,6 @@ class sed3:
         # plt.hold(False)
     def _ticklabels(self):
         if self.show_axis and self.actual_voxelsize is not None:
-                  ''
             # pass
 
             xmax = self.img.shape[0]
