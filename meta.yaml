@@ -3,9 +3,8 @@ package:
   version: "1.1.18"
 
 source:
-  fn: sed3-1.1.18.tar.gz
-  url: https://pypi.python.org/packages/source/s/sed3/sed3-1.1.18.tar.gz
-  md5: 8aa90ad09f163df3f4e0df6948af7bc2
+  git_rev: 1.1.18
+  git_url: .
 #  patches:
    # List any patch files here
    # - fix.patch
