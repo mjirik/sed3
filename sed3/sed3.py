@@ -700,6 +700,10 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
 
 
 def __select_slices(data, axis, slice_step):
+    if data is None:
+        return None
+
+
     if axis == 0:
         data = data[::slice_step, :, :]
     if axis == 1:
