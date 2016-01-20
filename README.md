@@ -7,34 +7,63 @@ sed3
 
 3D viewer and seed editor
 
-Example 1
+Example 1 - get seeds
 =======
 
     import sed3
     import numpy as np
 
-    img = np.zeros([10, 10, 15])
-    img[6:9, 2:7, 1:5] = 1
-    img[7:9, 3:9, 8:14] = 2
+    img = np.random.random([10, 12, 15])
+    img[6:9, 2:7, 1:5] += 2
+    img[7:9, 3:9, 8:14] += 3
 
     ed = sed3.sed3(img)
     ed.show()
     print ed.seeds
 
+![sed_screenshot](http://147.228.240.61/queetech/www/sed3_screenshot.png)
 
-Example 2
+
+Example 2 - static figure
 =======
 
     import sed3
     import numpy as np
 
-    img = np.zeros([10, 10, 15])
-    img[6:9, 2:7, 1:5] = 1
-    img[7:9, 3:9, 8:14] = 2
+    img = np.random.random([10, 12, 15])
+    img[6:9, 2:7, 1:5] += 2
+    img[7:9, 3:9, 8:14] += 3
 
     sed3.show_slices(img)
 
-Example 3
+![sed_screenshot](http://147.228.240.61/queetech/www/sed3_screenshot3.png)
+
+Example 3 - more options
+=======
+
+    import sed3
+    import numpy as np
+
+    img = np.random.random([10, 12, 15])
+    img[6:9, 2:7, 1:5] += 2
+    img[7:9, 3:9, 8:14] += 3
+
+
+    seeds = np.zeros(img.shape)
+    seeds[6:8, 4, 3:10] = 1
+    seeds[6:8, 6:11, 9:11] = 2
+    ed = sed3.sed3(img, seeds=seeds)
+
+    contour = np.zeros(img.shape)
+    contour[6:8, 3:10, 2:10] = 1
+    contour[6:8, 5:8, 4:7] = 2
+    ed = sed3.sed3(img, seeds=seeds, contour=contour, windowW=3.5, windowC=1.5)
+
+    seeds = ed.show()
+
+![sed_screenshot](http://147.228.240.61/queetech/www/sed3_screenshot2.png)
+
+Example 4 - PyQt version
 =======
 
     import sed3qt
@@ -42,9 +71,9 @@ Example 3
 
     from PyQt4.QtGui import QApplication
 
-    img = np.zeros([10, 10, 15])
-    img[6:9, 2:7, 1:5] = 1
-    img[7:9, 3:9, 8:14] = 2
+    img = np.random.random([10, 12, 15])
+    img[6:9, 2:7, 1:5] += 2
+    img[7:9, 3:9, 8:14] += 3
 
 
     app = QApplication([])
