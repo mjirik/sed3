@@ -575,7 +575,9 @@ class sed3:
 
 
 def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
-                shape=None, show=True, flipH=False, flipV=False):
+                shape=None, show=True,
+                flipH=False, flipV=False
+                ):
     """
     Show slices as tiled image
 
@@ -618,12 +620,12 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
     for i in range(0, number_of_slices):
         cont = None
         seeds2d = None
-        im2d = __get_slice(data3d, i, axis)
+        im2d = __get_slice(data3d, i, axis, flipH=flipH, flipV=flipV)
         if contour is not None:
-            cont = __get_slice(contour, i, axis)
+            cont = __get_slice(contour, i, axis, flipH=flipH, flipV=flipV)
             slco = __put_slice_in_slim(slco, cont, sh, i)
         if seeds is not None:
-            seeds2d = __get_slice(seeds, i, axis)
+            seeds2d = __get_slice(seeds, i, axis, flipH=flipH, flipV=flipV)
             slse = __put_slice_in_slim(slse, seeds2d, sh, i)
         #         plt.axis('off')
         #         plt.subplot(sh[0], sh[1], i+1)
@@ -631,7 +633,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
 
         slim = __put_slice_in_slim(slim, im2d, sh, i)
     #         show_slice(im2d, cont, seeds2d)
-    show_slice(slim, slco, slse, flipH=flipH, flipV=flipV)
+    show_slice(slim, slco, slse)
     if show:
         plt.show()
 
@@ -641,17 +643,34 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
 #     pass
 
 
-def __get_slice(data, slice_number, axis=0):
+def __get_slice(data, slice_number, axis=0, flipH=False, flipV=False):
+    """
+
+    :param data:
+    :param slice_number:
+    :param axis:
+    :param flipV: vertical flip
+    :param flipH: horizontal flip
+    :return:
+    """
     if axis == 0:
-        return data[slice_number, :, :]
+        data2d =  data[slice_number, :, :]
     elif axis == 1:
-        return data[:, slice_number, :]
+        data2d = data[:, slice_number, :]
     elif axis == 2:
-        return data[:, :, slice_number]
+        data2d = data[:, :, slice_number]
     else:
         logger.error("axis number error")
         print "axis number error"
         return None
+
+    if flipV:
+        if data2d is not None:
+            data2d = data2d[-1:0:-1,:]
+    if flipH:
+        if data2d is not None:
+            data2d = data2d[:, -1:0:-1]
+    return data2d
 
 
 def __put_slice_in_slim(slim, dataim, sh, i):
@@ -681,34 +700,16 @@ def __put_slice_in_slim(slim, dataim, sh, i):
 #     plt.close()
 
 
-def show_slice(data2d, contour2d=None, seeds2d=None, flipV=False, flipH=False):
+def show_slice(data2d, contour2d=None, seeds2d=None):
     """
 
     :param data2d:
     :param contour2d:
     :param seeds2d:
-    :param flipV: vertical flip
-    :param flipH: horizontal flip
     :return:
     """
     import copy as cp
     # Show results
-    if flipV:
-
-        if data2d is not None:
-            data2d = data2d[-1:0:-1,:]
-        if seeds2d is not None:
-            seeds2d = seeds2d[-1:0:-1,:]
-        if contour2d is not None:
-            contour2d= contour2d[-1:0:-1,:]
-    if flipH:
-        if data2d is not None:
-            data2d = data2d[:, -1:0:-1]
-        if seeds2d is not None:
-            seeds2d = seeds2d[:, -1:0:-1]
-        if contour2d is not None:
-            contour2d= contour2d[:, -1:0:-1]
-        # data2d = data2d[:, ::-1]
 
     colormap = cp.copy(plt.cm.get_cmap('brg'))
     colormap._init()
