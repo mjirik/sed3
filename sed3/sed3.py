@@ -693,7 +693,7 @@ def show_slice(data2d, contour2d=None, seeds2d=None, flipV=False, flipH=False):
     """
     import copy as cp
     # Show results
-    if flipV:
+    if flipH:
 
         if data2d is not None:
             data2d = data2d[-1:0:-1,:]
@@ -701,7 +701,7 @@ def show_slice(data2d, contour2d=None, seeds2d=None, flipV=False, flipH=False):
             seeds2d = seeds2d[-1:0:-1,:]
         if contour2d is not None:
             contour2d= contour2d[-1:0:-1,:]
-    if flipH:
+    if flipV:
         if data2d is not None:
             data2d = data2d[:, -1:0:-1]
         if seeds2d is not None:
