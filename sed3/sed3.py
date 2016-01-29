@@ -574,7 +574,7 @@ class sed3:
 
 
 def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
-                shape=None, show=True):
+                shape=None, show=True, flipH=True, flipV=True):
     """
     Show slices as tiled image
 
@@ -630,7 +630,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
 
         slim = __put_slice_in_slim(slim, im2d, sh, i)
     #         show_slice(im2d, cont, seeds2d)
-    show_slice(slim, slco, slse)
+    show_slice(slim, slco, slse, flipH=flipH, flipV=flipV)
     if show:
         plt.show()
 
@@ -680,9 +680,23 @@ def __put_slice_in_slim(slim, dataim, sh, i):
 #     plt.close()
 
 
-def show_slice(data2d, contour2d=None, seeds2d=None):
+def show_slice(data2d, contour2d=None, seeds2d=None, flipV=True, flipH=True):
+    """
+
+    :param data2d:
+    :param contour2d:
+    :param seeds2d:
+    :param flipV: vertical flip
+    :param flipH: horizontal flip
+    :return:
+    """
     import copy as cp
     # Show results
+    if flipH:
+        data2d = data2d[::-1,:]
+    if flipH:
+        data2d = data2d[:, ::-1]
+
     colormap = cp.copy(plt.cm.get_cmap('brg'))
     colormap._init()
     colormap._lut[:1:, 3] = 0
