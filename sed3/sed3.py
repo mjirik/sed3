@@ -694,9 +694,14 @@ def show_slice(data2d, contour2d=None, seeds2d=None, flipV=True, flipH=True):
     import copy as cp
     # Show results
     if flipH:
-        data2d = data2d[::-1,:]
+        data2d = data2d[-1:0:-1,:]
+        seeds2d = seeds2d[-1:0:-1,:]
+        contour2d= contour2d[-1:0:-1,:]
     if flipH:
-        data2d = data2d[:, ::-1]
+        data2d = data2d[:, -1:0:-1]
+        seeds2d = seeds2d[:, -1:0:-1]
+        contour2d= contour2d[:, -1:0:-1]
+        # data2d = data2d[:, ::-1]
 
     colormap = cp.copy(plt.cm.get_cmap('brg'))
     colormap._init()
