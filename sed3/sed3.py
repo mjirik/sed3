@@ -575,7 +575,7 @@ class sed3:
 
 
 def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
-                shape=None, show=True, flipH=True, flipV=True):
+                shape=None, show=True, flipH=False, flipV=False):
     """
     Show slices as tiled image
 
