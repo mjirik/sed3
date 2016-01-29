@@ -681,7 +681,7 @@ def __put_slice_in_slim(slim, dataim, sh, i):
 #     plt.close()
 
 
-def show_slice(data2d, contour2d=None, seeds2d=None, flipV=True, flipH=True):
+def show_slice(data2d, contour2d=None, seeds2d=None, flipV=False, flipH=False):
     """
 
     :param data2d:
@@ -693,7 +693,7 @@ def show_slice(data2d, contour2d=None, seeds2d=None, flipV=True, flipH=True):
     """
     import copy as cp
     # Show results
-    if flipH:
+    if flipV:
 
         if data2d is not None:
             data2d = data2d[-1:0:-1,:]
