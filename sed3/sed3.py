@@ -61,7 +61,7 @@ class sed3:
             cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
             mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
             windowW=None, windowC=None, show=False, sed3_on_close=None, figure=None,
-            show_axis=False
+            show_axis=False, flipV=False, flipH=False
     ):
         """
 
@@ -117,6 +117,8 @@ class sed3:
         self.colorbar = colorbar
         self.cmap = cmap
         self.show_axis = show_axis
+        self.flipH = flipH
+        self.flipV = flipV
         if seeds is None:
             self.seeds = np.zeros(self.imgshape, np.int8)
         else:
@@ -372,14 +374,31 @@ class sed3:
 
         self.draw_slice()
 
+    def __flip(self, sliceimg):
+        """
+        Flip if asked in self.flipV or self.flipH
+        :param sliceimg: one image slice
+        :return: flipp
+        """
+        if self.flipH:
+            sliceimg = sliceimg[:, -1:0:-1]
+
+        if self.flipV:
+            sliceimg = sliceimg [-1:0:-1,:]
+
+        return sliceimg
+
     def draw_slice(self):
         sliceimg = self.img[:, :, int(self.actual_slice)]
+        sliceimg = self.__flip(sliceimg)
         self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin=self.imgmin,
                                    vmax=self.imgmax, interpolation='nearest')
         # plt.hold(True)
         # pdb.set_trace();
+        sliceseeds = self.seeds[:, :, int(self.actual_slice)]
+        sliceseeds = self.__flip(sliceseeds)
         self.ax.imshow(self.prepare_overlay(
-            self.seeds[:, :, int(self.actual_slice)]
+            sliceseeds
         ), interpolation='nearest', vmin=self.imgmin, vmax=self.imgmax)
 
         # vykreslení okraje
@@ -389,8 +408,10 @@ class sed3:
             try:
                 # exception catch problem with none object in image
                 # ctr =
+                slicecontour = self.contour[:, :, int(self.actual_slice)]
+                slicecontour = self.__flip(slicecontour)
                 self.ax.contour(
-                    self.contour[:, :, int(self.actual_slice)], 1,
+                    slicecontour, 1,
                     levels=[0.5, 1.5, 2.5],
                     linewidths=2)
             except:
