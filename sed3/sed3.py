@@ -66,20 +66,23 @@ class sed3:
         """
 
         :param img:
-        :param voxelsizemm:
+        :param voxelsize: size of voxel
         :param initslice:
         :param colorbar:
         :param cmap:
-        :param seeds:
-        :param contour:
+        :param seeds: define seeds
+        :param contour: contour
         :param zaxis:
         :param mouse_button_map:
-        :param windowW:
-        :param windowC:
+        :param windowW: window width
+        :param windowC: window center
         :param show:
         :param sed3_on_close:
         :param figure:
         :param show_axis:
+        :param flipH: horizontal flip
+        :param flipV: vertical flip
+
         :return:
         """
 
