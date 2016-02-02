@@ -85,6 +85,8 @@ class TemplateTest(unittest.TestCase):
         """
         import sed3
         img, seeds, segmentation = self.create_data()
+        seeds[6:9, 10, 1:5] = 3
+        seeds[7:9, 11, 8:14] = 4
 
         ed = sed3.show_slices(img, seeds=seeds, contour=segmentation, slice_step=5, first_slice_offset_to_see_seed_with_label=1)
 
