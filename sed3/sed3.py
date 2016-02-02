@@ -778,15 +778,20 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
         tmp1 = copy.copy(colormap._lut[:,1])
         tmp2 = copy.copy(colormap._lut[:,2])
 
-        colormap._lut[:, 0] = sigmoid(tmp1, 0.5, 5)
-        colormap._lut[:, 1] = sigmoid(tmp0, 0.5, 5)
+        colormap._lut[:, 0] = sigmoid(tmp0, 0.5, 5)
+        colormap._lut[:, 1] = sigmoid(tmp1, 0.5, 5)
         colormap._lut[:, 2] = 0# sigmoid(tmp2, 0.5, 5)
         # seed 4
-        colormap._lut[140:220:, 0] = 0.7# sigmoid(tmp2, 0.5, 5)
-        colormap._lut[140:220:, 1] = 0.2# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[140:220:, 1] = 0.7# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[140:220:, 0] = 0.2# sigmoid(tmp2, 0.5, 5)
         # seed 2
-        colormap._lut[40:120:, 0] = 1.# sigmoid(tmp2, 0.5, 5)
-        colormap._lut[40:120:, 1] = 0.1# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[40:120:, 1] = 1.# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[40:120:, 0] = 0.1# sigmoid(tmp2, 0.5, 5)
+
+
+        # seed 2
+        colormap._lut[120:150:, 0] = 1.# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[120:150:, 1] = 0.1# sigmoid(tmp2, 0.5, 5)
 
         # my colors
 
