@@ -77,6 +77,24 @@ class TemplateTest(unittest.TestCase):
         # ed.show()
         # print ed.seeds
 
+    @attr('interactive')
+    def test_first_slice_offset_interactive(self):
+        """
+        set offset to see seed with defined label
+        :return:
+        """
+        import sed3
+        img, seeds, segmentation = self.create_data()
+
+        ed = sed3.show_slices(img, seeds=seeds, contour=segmentation, slice_step=5, first_slice_offset_to_see_seed_with_label=1)
+
+    def test_first_slice_offset(self):
+        import sed3
+        img, seeds, segmentation = self.create_data()
+
+        sed3.show_slices(img, seeds=seeds, contour=segmentation, slice_step=5,
+                              first_slice_offset_to_see_seed_with_label=1, show=False)
+
     def test_show_slices(self):
         import sed3
         img, seeds, segmentation = self.create_data()

@@ -600,7 +600,9 @@ class sed3:
 
 def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
                 shape=None, show=True,
-                flipH=False, flipV=False
+                flipH=False, flipV=False,
+                first_slice_offset=0,
+                first_slice_offset_to_see_seed_with_label=None
                 ):
     """
     Show slices as tiled image
@@ -610,11 +612,29 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
     :param seeds: Seed data
     :param axis: Axis for sliceing
     :param slice_step: Show each "slice_step"-th slice
+    :param first_slice_offset: set offset of first slice
+    :param first_slice_offset_to_see_seed_with_label: find offset to see slice with seed with defined label
     """
 
-    data3d = _import_data(data3d, axis=axis, slice_step=slice_step)
-    contour = _import_data(contour, axis=axis, slice_step=slice_step)
-    seeds = _import_data(seeds, axis=axis, slice_step=slice_step)
+    if first_slice_offset_to_see_seed_with_label is not None:
+        if seeds is not None:
+            inds = np.nonzero(seeds==first_slice_offset_to_see_seed_with_label)
+            print inds
+            # take first one with defined seed
+            # ind = inds[axis][0]
+            # take most used index
+            ind = np.median(inds[axis])
+            first_slice_offset = ind % slice_step
+
+            print first_slice_offset
+
+
+
+
+
+    data3d = _import_data(data3d, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
+    contour = _import_data(contour, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
+    seeds = _import_data(seeds, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
 
     number_of_slices = data3d.shape[axis]
     # square image
@@ -751,21 +771,21 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
         plt.imshow(seeds2d, cmap=colormap, interpolation='none')
 
 
-def __select_slices(data, axis, slice_step):
+def __select_slices(data, axis, slice_step, first_slice_offset=0):
     if data is None:
         return None
 
 
     if axis == 0:
-        data = data[::slice_step, :, :]
+        data = data[first_slice_offset::slice_step, :, :]
     if axis == 1:
-        data = data[:, ::slice_step, :]
+        data = data[:, first_slice_offset::slice_step, :]
     if axis == 2:
-        data = data[:, :, ::slice_step]
+        data = data[:, :, first_slice_offset::slice_step]
     return data
 
 
-def _import_data(data, axis, slice_step):
+def _import_data(data, axis, slice_step, first_slice_offset=0):
     """
     import ndarray or SimpleITK data
     """
@@ -776,7 +796,7 @@ def _import_data(data, axis, slice_step):
     except:
         pass
 
-    data = __select_slices(data, axis, slice_step)
+    data = __select_slices(data, axis, slice_step, first_slice_offset=first_slice_offset)
     return data
 
 
