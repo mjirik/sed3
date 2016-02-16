@@ -612,6 +612,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
     :param seeds: Seed data
     :param axis: Axis for sliceing
     :param slice_step: Show each "slice_step"-th slice
+    :param shape: set shape of output tiled image. slice_step is estimated if it is not set explicitly
     :param first_slice_offset: set offset of first slice
     :param first_slice_offset_to_see_seed_with_label: find offset to see slice with seed with defined label
     """
