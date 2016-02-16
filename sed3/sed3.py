@@ -617,11 +617,14 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
     """
 
     # odhad slice_step, neni li zadan
+    # slice_step estimation
+    # TODO make precise estimation (use np.linspace to indexing?)
     if slice_step is None:
         if shape is None:
             slice_step = 1
         else:
             slice_step = int(data3d.shape[axis] / float(np.prod(shape)))
+
 
 
     if first_slice_offset_to_see_seed_with_label is not None:
