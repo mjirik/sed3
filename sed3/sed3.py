@@ -631,7 +631,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
     if first_slice_offset_to_see_seed_with_label is not None:
         if seeds is not None:
             inds = np.nonzero(seeds==first_slice_offset_to_see_seed_with_label)
-            print inds
+            # print inds
             # take first one with defined seed
             # ind = inds[axis][0]
             # take most used index
