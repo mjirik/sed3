@@ -598,7 +598,7 @@ class sed3:
         return self.img[self.seeds == label]
 
 
-def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
+def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
                 shape=None, show=True,
                 flipH=False, flipV=False,
                 first_slice_offset=0,
@@ -616,6 +616,14 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
     :param first_slice_offset_to_see_seed_with_label: find offset to see slice with seed with defined label
     """
 
+    # odhad slice_step, neni li zadan
+    if slice_step is None:
+        if shape is None:
+            slice_step = 1
+        else:
+            slice_step = int(data3d.shape[axis] / float(np.prod(shape)))
+
+
     if first_slice_offset_to_see_seed_with_label is not None:
         if seeds is not None:
             inds = np.nonzero(seeds==first_slice_offset_to_see_seed_with_label)
@@ -625,11 +633,6 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
             # take most used index
             ind = np.median(inds[axis])
             first_slice_offset = ind % slice_step
-
-            print first_slice_offset
-
-
-
 
 
     data3d = _import_data(data3d, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
@@ -643,14 +646,14 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
     #     sh = [nn, nn]
 
     # 4:3 image
-    sh = shape
-    if sh is None:
+    meta_shape = shape
+    if meta_shape is None:
         na = int(math.ceil(number_of_slices * 16.0 / 9.0) ** 0.5)
         nb = int(math.ceil(float(number_of_slices) / na))
-        sh = [nb, na]
+        meta_shape = [nb, na]
 
     dsh = __get_slice(data3d, 0, axis).shape
-    slimsh = [int(dsh[0] * sh[0]), int(dsh[1] * sh[1])]
+    slimsh = [int(dsh[0] * meta_shape[0]), int(dsh[1] * meta_shape[1])]
     slim = np.zeros(slimsh, dtype=data3d.dtype)
     slco = None
     slse = None
@@ -667,15 +670,15 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=1,
         im2d = __get_slice(data3d, i, axis, flipH=flipH, flipV=flipV)
         if contour is not None:
             cont = __get_slice(contour, i, axis, flipH=flipH, flipV=flipV)
-            slco = __put_slice_in_slim(slco, cont, sh, i)
+            slco = __put_slice_in_slim(slco, cont, meta_shape, i)
         if seeds is not None:
             seeds2d = __get_slice(seeds, i, axis, flipH=flipH, flipV=flipV)
-            slse = __put_slice_in_slim(slse, seeds2d, sh, i)
+            slse = __put_slice_in_slim(slse, seeds2d, meta_shape, i)
         #         plt.axis('off')
         #         plt.subplot(sh[0], sh[1], i+1)
         #         plt.subplots_adjust(wspace=0, hspace=0)
 
-        slim = __put_slice_in_slim(slim, im2d, sh, i)
+        slim = __put_slice_in_slim(slim, im2d, meta_shape, i)
     #         show_slice(im2d, cont, seeds2d)
     show_slice(slim, slco, slse)
     if show:
