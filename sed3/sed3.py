@@ -624,7 +624,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
         if shape is None:
             slice_step = 1
         else:
-            slice_step = int(data3d.shape[axis] / float(np.prod(shape)))
+            slice_step = ((data3d.shape[axis] - first_slice_offset ) / float(np.prod(shape)))
 
 
 
@@ -814,13 +814,20 @@ def __select_slices(data, axis, slice_step, first_slice_offset=0):
     if data is None:
         return None
 
+    inds = np.floor(np.arange(first_slice_offset, data.shape[axis], slice_step)).astype(np.int)
+    # import ipdb
+    # ipdb.set_trace()
+    # logger.warning("select slices")
 
     if axis == 0:
-        data = data[first_slice_offset::slice_step, :, :]
+        # data = data[first_slice_offset::slice_step, :, :]
+        data = data[inds, :, :]
     if axis == 1:
-        data = data[:, first_slice_offset::slice_step, :]
+        # data = data[:, first_slice_offset::slice_step, :]
+        data = data[:, inds, :]
     if axis == 2:
-        data = data[:, :, first_slice_offset::slice_step]
+        # data = data[:, :, first_slice_offset::slice_step]
+        data = data[:, :, inds]
     return data
 
 
