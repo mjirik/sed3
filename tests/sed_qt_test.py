@@ -55,14 +55,14 @@ class FailingExample(QtGui.QWidget):
     def buttonClicked(self):
         print "button"
         import sed3
-        import sed3.sed3qt
+        import sed3.sed3
         import numpy as np
 
         img = np.zeros([10, 10, 15])
         img[6:9, 2:7, 1:5] = 1
         img[7:9, 3:9, 8:14] = 2
 
-        ed = sed3.sed3qt.sed3qt(img)
+        ed = sed3.sed3qt(img)
         # ed.set_params(img)
         
         if ed.exec_():
@@ -198,6 +198,26 @@ class TemplateTest(unittest.TestCase):
 
 
         pass
+
+    def test_sed3qtWidget(self):
+        app = QtGui.QApplication(sys.argv)
+        print "button"
+        import sed3
+        import sed3.sed3qt
+        import numpy as np
+
+        sz = [10, 20, 15]
+        img = np.zeros(sz)
+        img[6:9, 2:7, 1:5] = 1
+        img[7:9, 3:9, 8:14] = 2
+
+        ed = sed3.sed3qtWidget(img)
+        ed.show()
+        ed.close()
+        app.exec_()
+        self.assertEquals(ed.seeds, sz)
+        self.assertEqual(np.sum(ed.seeds), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

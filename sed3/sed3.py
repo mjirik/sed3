@@ -892,6 +892,46 @@ class sed3qt(QtGui.QDialog):
     def get_values(self):
         return self.sed
 
+class sed3qtWidget(QtGui.QWidget):
+    def __init__(self, *pars, **params):
+        # def __init__(self,parent=None):
+        parent = None
+
+        # QtGui.QWidget.__init__(self, parent)
+        super(sed3qtWidget, self).__init__(parent)
+        # self.setupUi(self)
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+        # self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # set the layout
+        layout = QtGui.QVBoxLayout()
+        # layout.addWidget(self.toolbar)
+        layout.addWidget(self.canvas)
+        # layout.addWidget(self.button)
+        self.setLayout(layout)
+
+        # def set_params(self, *pars, **params):
+        # import sed3.sed3
+
+        params["figure"] = self.figure
+        self.sed = sed3(*pars, **params)
+        self.sed.sed3_on_close = self.callback_close
+        # ed.show()
+        self.output = None
+
+    def callback_close(self, sed):
+        self.output = sed
+        sed.prepare_output_data()
+        self.seeds = sed.seeds
+        self.close()
+
+    def show(self):
+        super(sed3qtWidget, self).show()
+        return self.sed.show_fcn()
+
+    def get_values(self):
+        return self.sed
 
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
