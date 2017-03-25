@@ -24,8 +24,8 @@ install:
     - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then conda install --yes python=3.4.3; fi
     - conda install --yes --file requirements_conda.txt
 #    - conda install --yes -c SimpleITK -c luispedro -c mjirik --file requirements_conda.txt
-    - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; pip install -r requirements_pip.txt; fi
-    - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; pip3 install -r requirements_pip.txt; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install -r requirements_pip.txt; fi
+    - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pip3 install -r requirements_pip.txt; fi
 # command to run tests
 script: nosetests --with-coverage --cover-package=sed3
 after_success:

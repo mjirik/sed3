@@ -29,7 +29,7 @@ try:
     except:
         from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 except:
-    logger.warning('PyQt4 not detected')
+    logger.exception('PyQt4 not detected')
     print('PyQt4 not detected')
 
 # compatibility between python 2 and 3
