@@ -35,7 +35,7 @@ import numpy as np
 
 class FailingExample(QtGui.QWidget):
     """
-    sed3 by měl zastavit po řádku ed.show() 
+    sed3 by měl zastavit po řádku ed.show()
     bohužel však nezastaví. Tento kód replikuje tuto chybu
     """
 
@@ -49,11 +49,11 @@ class FailingExample(QtGui.QWidget):
         self.setWindowTitle('Icon')
         # self.setWindowIcon(QtGui.QIcon('web.png'))
         btn1 = QtGui.QPushButton("Button 1", self)
-        btn1.clicked.connect(self.buttonClicked) 
+        btn1.clicked.connect(self.buttonClicked)
         self.show()
 
     def buttonClicked(self):
-        print "button"
+        print("button")
         import sed3
         import sed3.sed3
         import numpy as np
@@ -64,29 +64,29 @@ class FailingExample(QtGui.QWidget):
 
         ed = sed3.sed3qt(img)
         # ed.set_params(img)
-        
+
         if ed.exec_():
-            print "konec edu"
+            print("konec edu")
             vals = ed.o
-            print vals.seeds
+            print(vals.seeds)
 
 
-        print np.nonzero(ed.seeds)
+        print(np.nonzero(ed.seeds))
         # ed = sed3.sed3(img)
         # ed.sed3_on_close = self.callback_close
         # ed.show()
 
-        print "konec sed3"
+        print("konec sed3")
         # QtCore.pyqtRemoveInputHook()
         # import ipdb; ipdb.set_trace() #  noqa BREAKPOINT
 
     def callback_close(self, sss):
-        print "callback222"
-        print np.nonzero(sss.seeds)
+        print("callback222")
+        print(np.nonzero(sss.seeds))
 
 # def callback_close(sss):
-#     print "callback"
-#     print sss.seeds
+#     print("callback")
+#     print(sss.seeds)
 
 class Example(QtGui.QWidget):
 
@@ -110,7 +110,7 @@ class Example(QtGui.QWidget):
 
         # Just some button connected to `plot` method
         # self.btn1 = QtGui.QPushButton("Button 1", self)
-        # self.btn1.clicked.connect(self.buttonClicked) 
+        # self.btn1.clicked.connect(self.buttonClicked)
         self.button = QtGui.QPushButton('Plot')
         self.button.clicked.connect(self.plot)
  # set the layout
@@ -128,7 +128,7 @@ class Example(QtGui.QWidget):
         self.show()
 
     def buttonClicked(self):
-        print "button"
+        print("button")
         import sed3
         import numpy as np
 
@@ -138,8 +138,7 @@ class Example(QtGui.QWidget):
 
         ed = sed3.sed3(img)
         ed.show()
-        print "konec sed3"
-        pass
+        print("konec sed3")
 
     def plot(self):
         ''' plot some random stuff '''
@@ -171,7 +170,7 @@ class TemplateTest(unittest.TestCase):
         #
         # ed = sed3.sed3(img)
         # ed.show()
-        # print ed.seeds
+        # print(ed.seeds)
         app = QtGui.QApplication(sys.argv)
 
         main = Example()
@@ -190,7 +189,7 @@ class TemplateTest(unittest.TestCase):
         #
         # ed = sed3.sed3(img)
         # ed.show()
-        # print ed.seeds
+        # print(ed.seeds)
         app = QtGui.QApplication(sys.argv)
 
         main = FailingExample()
@@ -201,7 +200,7 @@ class TemplateTest(unittest.TestCase):
 
     def test_sed3qtWidget(self):
         app = QtGui.QApplication(sys.argv)
-        print "button"
+        print("button")
         import sed3
         import sed3.sed3qt
         import numpy as np

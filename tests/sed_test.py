@@ -43,7 +43,7 @@ class TemplateTest(unittest.TestCase):
 
         ed = sed3.sed3(img)
         ed.show()
-        print ed.seeds
+        print(ed.seeds)
 
     def test_run_without_show(self):
         import sed3
@@ -55,7 +55,7 @@ class TemplateTest(unittest.TestCase):
 
         ed = sed3.sed3(img)
         # ed.show()
-        print ed.seeds
+        print(ed.seeds)
 
     def create_data(self):
         shape = [20, 21, 15]
@@ -75,7 +75,7 @@ class TemplateTest(unittest.TestCase):
         sed3.sed3(img, seeds=seeds, contour=segmentation)
         # ed = sed3.sed3(img, seeds=seeds, contour=segmentation)
         # ed.show()
-        # print ed.seeds
+        # print(ed.seeds)
 
     @attr('interactive')
     def test_first_slice_offset_interactive(self):
