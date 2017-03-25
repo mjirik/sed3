@@ -57,8 +57,8 @@ setup(
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=['matplotlib', 'pyyaml', 'scipy',
 # fallowing lines are requred by conda
-        'nose', 'mock'],
-    # tests_require=['nose', 'mock'],
+        'nose', ],
+    # tests_require=['nose', ],
     # test_suite='nose.collector',
 
     # If there are data files included in your packages that need to be
