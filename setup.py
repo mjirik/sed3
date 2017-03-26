@@ -12,7 +12,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # # http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.1.34',
+    version='1.1.35',
     url='https://github.com/mjirik/py3DSeedEditor',
     author='Miroslav Jirik',
     author_email='miroslav.jirik@gmail.com',
