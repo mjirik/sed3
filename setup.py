@@ -41,7 +41,7 @@ setup(
         # 'Programming Language :: Python :: 3',
         # 'Programming Language :: Python :: 3.2',
         # 'Programming Language :: Python :: 3.3',
-        # 'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.4',
     ],
 
     # What does your project relate to?
@@ -55,10 +55,10 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=['matplotlib', 'pyyaml', 'scipy', 
+    install_requires=['matplotlib', 'pyyaml', 'scipy',
 # fallowing lines are requred by conda
-        'nose', 'mock'],
-    # tests_require=['nose', 'mock'],
+        'nose', ],
+    # tests_require=['nose', ],
     # test_suite='nose.collector',
 
     # If there are data files included in your packages that need to be

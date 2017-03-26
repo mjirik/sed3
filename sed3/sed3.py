@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import unittest
@@ -29,8 +29,12 @@ try:
     except:
         from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 except:
-    logger.warning('PyQt4 not detected')
-    print ('PyQt4 not detected')
+    logger.exception('PyQt4 not detected')
+    print('PyQt4 not detected')
+
+# compatibility between python 2 and 3
+if sys.version_info[0] >= 3:
+    xrange = range
 
 
 class sed3:
@@ -341,7 +345,7 @@ class sed3:
                 # data = np.transpose(data, (0, 1, 2))
                 pass
             else:
-                print "problem with zaxis in _rotate_start()"
+                print("problem with zaxis in _rotate_start()")
                 logger.warning("problem with zaxis in _rotate_start()")
 
         return data
@@ -364,11 +368,11 @@ class sed3:
                 elif zaxis == 2:
                     pass
                 else:
-                    print "problem with zaxis in _rotate_start()"
+                    print("problem with zaxis in _rotate_start()")
                     logger.warning("problem with zaxis in _rotate_start()")
 
             else:
-                print "There is a danger in calling show() twice"
+                print("There is a danger in calling show() twice")
                 logger.warning("There is a danger in calling show() twice")
 
         return data
@@ -426,7 +430,7 @@ class sed3:
         # self.ax.set_axis_below(False)
         self._ticklabels()
 
-        # print ctr
+        # print(ctr)
         # import pdb; pdb.set_trace()
 
         self.fig.canvas.draw()
@@ -519,7 +523,7 @@ class sed3:
         self.actual_slice_slider.set_val(self.actual_slice)
         # tim, ze dojde ke zmene slideru je show_slce volan z nej
         # self.show_slice()
-        # print self.actual_slice
+        # print(self.actual_slice)
 
     # malování -------------------
     def on_press(self, event):
@@ -528,7 +532,7 @@ class sed3:
             return
         # contains, attrd = self.rect.contains(event)
         # if not contains: return
-        # print 'event contains', self.rect.xy
+        # print('event contains', self.rect.xy)
         # x0, y0 = self.rect.xy
         self.press = [event.xdata], [event.ydata], event.button
         # self.press1 = True
@@ -540,7 +544,7 @@ class sed3:
 
         if event.inaxes != self.ax:
             return
-        # print event.inaxes
+        # print(event.inaxes)
 
         x0, y0, btn = self.press
         x0.append(event.xdata)
@@ -550,7 +554,7 @@ class sed3:
         'on release we reset the press data'
         if self.press is None:
             return
-        # print self.press
+        # print(self.press)
         x0, y0, btn = self.press
         if btn == 1:
             color = 'r'
@@ -633,7 +637,7 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
     if first_slice_offset_to_see_seed_with_label is not None:
         if seeds is not None:
             inds = np.nonzero(seeds==first_slice_offset_to_see_seed_with_label)
-            # print inds
+            # print(inds)
             # take first one with defined seed
             # ind = inds[axis][0]
             # take most used index
@@ -714,7 +718,7 @@ def __get_slice(data, slice_number, axis=0, flipH=False, flipV=False):
         data2d = data[:, :, slice_number]
     else:
         logger.error("axis number error")
-        print "axis number error"
+        print("axis number error")
         return None
 
     if flipV:
@@ -1129,7 +1133,7 @@ def slices(img, shape=[3, 4]):
     for i in range(0, i_max):
         # i = 0
         islice = round((img.shape[0] / float(i_max)) * i)
-        #         print islice
+        #         print(islice)
         imgi = img[islice, :, :]
         coords = index_to_coords(i, sh)
         aic = np.asarray(img.shape[-2:]) * coords
@@ -1137,8 +1141,8 @@ def slices(img, shape=[3, 4]):
         allimg[aic[0]:aic[0] + imgi.shape[-2], aic[1]:aic[1] + imgi.shape[-1]] = imgi
 
     #     plt.imshow(imgi)
-    #     print imgi.shape
-    #     print img.shape
+    #     print(imgi.shape)
+    #     print(img.shape)
     return allimg
 
 

@@ -33,7 +33,6 @@ requirements:
     - pyyaml
     - scipy
     - nose
-    - mock
 
   run:
     - python
@@ -41,7 +40,6 @@ requirements:
     - pyyaml
     - scipy
     - nose
-    - mock
 
 test:
   # Python imports
