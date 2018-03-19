@@ -855,87 +855,90 @@ def _import_data(data, axis, slice_step, first_slice_offset=0):
 # self.rect.figure.canvas.draw()
 
 # return data
+try:
+    from PyQt4 import QtGui, QtCore
+    class sed3qt(QtGui.QDialog):
+        def __init__(self, *pars, **params):
+            # def __init__(self,parent=None):
+            parent = None
 
-class sed3qt(QtGui.QDialog):
-    def __init__(self, *pars, **params):
-        # def __init__(self,parent=None):
-        parent = None
+            QtGui.QDialog.__init__(self, parent)
+            # super(Window, self).__init__(parent)
+            # self.setupUi(self)
+            self.figure = plt.figure()
+            self.canvas = FigureCanvas(self.figure)
+            self.toolbar = NavigationToolbar(self.canvas, self)
 
-        QtGui.QDialog.__init__(self, parent)
-        # super(Window, self).__init__(parent)
-        # self.setupUi(self)
-        self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
+            # set the layout
+            layout = QtGui.QVBoxLayout()
+            layout.addWidget(self.toolbar)
+            layout.addWidget(self.canvas)
+            # layout.addWidget(self.button)
+            self.setLayout(layout)
 
-        # set the layout
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(self.toolbar)
-        layout.addWidget(self.canvas)
-        # layout.addWidget(self.button)
-        self.setLayout(layout)
+            # def set_params(self, *pars, **params):
+            # import sed3.sed3
 
-        # def set_params(self, *pars, **params):
-        # import sed3.sed3
+            params["figure"] = self.figure
+            self.sed = sed3(*pars, **params)
+            self.sed.sed3_on_close = self.callback_close
+            # ed.show()
+            self.output = None
 
-        params["figure"] = self.figure
-        self.sed = sed3(*pars, **params)
-        self.sed.sed3_on_close = self.callback_close
-        # ed.show()
-        self.output = None
+        def callback_close(self, sed):
+            self.output = sed
+            sed.prepare_output_data()
+            self.seeds = sed.seeds
+            self.close()
 
-    def callback_close(self, sed):
-        self.output = sed
-        sed.prepare_output_data()
-        self.seeds = sed.seeds
-        self.close()
+        def show(self):
+            return self.sed.show_fcn()
 
-    def show(self):
-        return self.sed.show_fcn()
+        def get_values(self):
+            return self.sed
 
-    def get_values(self):
-        return self.sed
+    class sed3qtWidget(QtGui.QWidget):
+        def __init__(self, *pars, **params):
+            # def __init__(self,parent=None):
+            parent = None
 
-class sed3qtWidget(QtGui.QWidget):
-    def __init__(self, *pars, **params):
-        # def __init__(self,parent=None):
-        parent = None
+            # QtGui.QWidget.__init__(self, parent)
+            super(sed3qtWidget, self).__init__(parent)
+            # self.setupUi(self)
+            self.figure = plt.figure()
+            self.canvas = FigureCanvas(self.figure)
+            # self.toolbar = NavigationToolbar(self.canvas, self)
 
-        # QtGui.QWidget.__init__(self, parent)
-        super(sed3qtWidget, self).__init__(parent)
-        # self.setupUi(self)
-        self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        # self.toolbar = NavigationToolbar(self.canvas, self)
+            # set the layout
+            layout = QtGui.QVBoxLayout()
+            # layout.addWidget(self.toolbar)
+            layout.addWidget(self.canvas)
+            # layout.addWidget(self.button)
+            self.setLayout(layout)
 
-        # set the layout
-        layout = QtGui.QVBoxLayout()
-        # layout.addWidget(self.toolbar)
-        layout.addWidget(self.canvas)
-        # layout.addWidget(self.button)
-        self.setLayout(layout)
+            # def set_params(self, *pars, **params):
+            # import sed3.sed3
 
-        # def set_params(self, *pars, **params):
-        # import sed3.sed3
+            params["figure"] = self.figure
+            self.sed = sed3(*pars, **params)
+            self.sed.sed3_on_close = self.callback_close
+            # ed.show()
+            self.output = None
 
-        params["figure"] = self.figure
-        self.sed = sed3(*pars, **params)
-        self.sed.sed3_on_close = self.callback_close
-        # ed.show()
-        self.output = None
+        def callback_close(self, sed):
+            self.output = sed
+            sed.prepare_output_data()
+            self.seeds = sed.seeds
+            self.close()
 
-    def callback_close(self, sed):
-        self.output = sed
-        sed.prepare_output_data()
-        self.seeds = sed.seeds
-        self.close()
+        def show(self):
+            super(sed3qtWidget, self).show()
+            return self.sed.show_fcn()
 
-    def show(self):
-        super(sed3qtWidget, self).show()
-        return self.sed.show_fcn()
-
-    def get_values(self):
-        return self.sed
+        def get_values(self):
+            return self.sed
+except:
+    pass
 
 # --------------------------tests-----------------------------
 class Tests(unittest.TestCase):
