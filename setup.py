@@ -1,3 +1,6 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Fallowing command is used to upload to pipy
 #    python setup.py register sdist upload
 
@@ -12,7 +15,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # # http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.1.38',
+    version='1.2.2',
     url='https://github.com/mjirik/py3DSeedEditor',
     author='Miroslav Jirik',
     author_email='miroslav.jirik@gmail.com',
@@ -55,9 +58,16 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=['matplotlib', 'scipy',
+    install_requires=['matplotlib', 'scipy', # "PyQt4"
+                      # - python
+                      # - matplotlib
+                      # - pyyaml
+                      # - scipy
+                      # - nose
+                      # - pyqt 4.11.*
 # fallowing lines are requred by conda
-        'nose', ],
+#         'nose',
+                      ],
     # tests_require=['nose', ],
     # test_suite='nose.collector',
 
