@@ -30,14 +30,14 @@ requirements:
     - python
     - setuptools
     - matplotlib
-    - pyyaml
+#    - pyyaml
     - scipy
     - nose
 
   run:
     - python
     - matplotlib
-    - pyyaml
+#    - pyyaml
     - scipy
     - nose
     - pyqt 4.11.*
