@@ -1,9 +1,9 @@
 package:
   name: sed3
-  version: "1.2.5"
+  version: "1.2.6"
 
 source:
-  git_rev: 1.2.5
+  git_rev: 1.2.6
   git_url: .
 #  patches:
    # List any patch files here
