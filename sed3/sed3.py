@@ -608,7 +608,8 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
                 shape=None, show=True,
                 flipH=False, flipV=False,
                 first_slice_offset=0,
-                first_slice_offset_to_see_seed_with_label=None
+                first_slice_offset_to_see_seed_with_label=None,
+                slice_number=None
                 ):
     """
     Show slices as tiled image
@@ -618,11 +619,15 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
     :param seeds: Seed data
     :param axis: Axis for sliceing
     :param slice_step: Show each "slice_step"-th slice, can be float
-    :param shape: set shape of output tiled image. slice_step is estimated if it is not set explicitly
+    :param shape: tuple(vertical_tiles_number, horisontal_tiles_number), set shape of output tiled image. slice_step is
+    estimated if it is not set explicitly
     :param first_slice_offset: set offset of first slice
     :param first_slice_offset_to_see_seed_with_label: find offset to see slice with seed with defined label
+    :param slice_number: int, Number of showed slices. Overwrites shape and slice_step.
     """
 
+    if slice_number is not None:
+        slice_step = data3d.shape[axis] / slice_number
     # odhad slice_step, neni li zadan
     # slice_step estimation
     # TODO make precise estimation (use np.linspace to indexing?)

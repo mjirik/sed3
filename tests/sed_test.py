@@ -105,6 +105,12 @@ class TemplateTest(unittest.TestCase):
         # sed3.close()
         # sed3.sho()
 
+    def test_show_slices_slice_number(self):
+        import sed3
+        img, seeds, segmentation = self.create_data()
+
+        sed3.show_slices(img, seeds=seeds, contour=segmentation, show=False, slice_number=6)
+
 
 if __name__ == "__main__":
     unittest.main()
