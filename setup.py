@@ -58,7 +58,8 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=[ 'matplotlib', 
+    install_requires=[
+                    # 'matplotlib',
                       # 'scipy', "PyQt4",
                       # - python
                       # - matplotlib
