@@ -4,7 +4,7 @@ python:
 #  - "2.7"
 #  # - "3.2"
 #  # - "3.3"
-  - "3.7"
+  - "2.7"
 env:
     - CONDA_PYTHON_VERSION=2.7
     - CONDA_PYTHON_VERSION=3.6
@@ -17,6 +17,12 @@ os:
 #    - windows # on bash there does not work linux X server
 services:
   - xvfb
+matrix:
+  allow_failures:
+    - env: CONDA_PYTHON_VERSION=2.7
+    - env: CONDA_PYTHON_VERSION=3.7
+    - os: osx
+  fast_finish: true
 before_install:
     - wget http://home.zcu.cz/~mjirik/lisa/install/install_conda.sh && source install_conda.sh
   # We do this conditionally because it saves us some downloading if the
