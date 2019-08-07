@@ -1,32 +1,39 @@
 language: python
-#python:
+python:
 #  #  - "2.6"
 #  - "2.7"
 #  # - "3.2"
 #  # - "3.3"
-#  - "3.4"
+  - "3.6"
 env:
     - CONDA_PYTHON_VERSION=2.7
     - CONDA_PYTHON_VERSION=3.4
     - CONDA_PYTHON_VERSION=3.6
 virtualenv:
     system_site_packages: false
+os:
+  - linux
+  - osx
+#    - windows # on bash there does not work linux X server
+services:
+  - xvfb
 before_install:
-    # We do this conditionally because it saves us some downloading if the
-    # version is the same.
-    - if [[ "$CONDA_PYTHON_VERSION" == "2.7" ]]; then
-        wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-      else
-        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-      fi
-#    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-    - chmod +x miniconda.sh
-    - ./miniconda.sh -b -p /home/travis/miniconda
-    - export PATH=/home/travis/miniconda/bin:$PATH
+    - wget http://home.zcu.cz/~mjirik/lisa/install/install_conda.sh && source install_conda.sh
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+#    - if [[ "$CONDA_PYTHON_VERSION" == "2.7" ]]; then
+#        wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+#      else
+#        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+#      fi
+##    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+#    - chmod +x miniconda.sh
+#    - ./miniconda.sh -b -p /home/travis/miniconda
+#    - export PATH=/home/travis/miniconda/bin:$PATH
     - conda create --yes -n travis python=$CONDA_PYTHON_VERSION
     - sudo apt-get install -qq $(< requirements_apt.txt)
     - "export DISPLAY=:99.0"
-    - sh -e /etc/init.d/xvfb start
+#    - sh -e /etc/init.d/xvfb start
 # command to install dependencies
 install:
     - conda update --yes conda
