@@ -11,7 +11,7 @@
 """
 import unittest
 from nose.plugins.attrib import attr
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 # from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
@@ -33,7 +33,7 @@ import numpy as np
 
 
 
-class FailingExample(QtGui.QWidget):
+class FailingExample(QtWidgets.QWidget):
     """
     sed3 by měl zastavit po řádku ed.show()
     bohužel však nezastaví. Tento kód replikuje tuto chybu
@@ -88,7 +88,8 @@ class FailingExample(QtGui.QWidget):
 #     print("callback")
 #     print(sss.seeds)
 
-class Example(QtGui.QWidget):
+
+class Example(QtWidgets.QWidget):
 
     def __init__(self):
         super(Example, self).__init__()
@@ -157,6 +158,7 @@ class Example(QtGui.QWidget):
         # refresh canvas
         self.canvas.draw()
 
+
 class TemplateTest(unittest.TestCase):
 
     @attr('interactive')
@@ -198,8 +200,9 @@ class TemplateTest(unittest.TestCase):
 
         pass
 
+
     def test_sed3qtWidget(self):
-        app = QtGui.QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         print("button")
         import sed3
         import sed3.sed3qt

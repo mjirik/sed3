@@ -22,12 +22,12 @@ logger = logging.getLogger(__name__)
 # pdb.set_trace();
 
 try:
-    from PyQt4 import QtGui, QtCore
-    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+    from PyQt5 import QtGui, QtCore
+    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     try:
-        from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+        from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
     except:
-        from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
+        from matplotlib.backends.backend_qt5agg import NavigationToolbar2QTAgg as NavigationToolbar
 except:
     logger.exception('PyQt4 not detected')
     print('PyQt4 not detected')
@@ -168,7 +168,10 @@ class sed3:
 
         axcolor = 'lightgoldenrodyellow'
         self.ax_actual_slice = self.fig.add_axes(
-            [0.15, 0.15, 0.7, 0.03], axisbg=axcolor)
+            [0.15, 0.15, 0.7, 0.03],
+            # axisbg=axcolor
+            facecolor=axcolor
+        )
         self.actual_slice_slider = Slider(self.ax_actual_slice, 'Slice', 0,
                                           self.imgshape[2] - 1,
                                           valinit=initslice)
@@ -177,13 +180,19 @@ class sed3:
         immin = np.min(self.img)
         # axcolor_front = 'darkslategray'
         ax_window_c = self.fig.add_axes(
-            [0.5, 0.05, 0.2, 0.02], axisbg=axcolor)
+            [0.5, 0.05, 0.2, 0.02],
+            # axisbg=axcolor
+            facecolor=axcolor
+        )
         self.window_c_slider = Slider(ax_window_c, 'Center',
                                           immin,
                                           immax,
                                           valinit=float(self.windowC))
         ax_window_w = self.fig.add_axes(
-            [0.5, 0.10, 0.2, 0.02], axisbg=axcolor)
+            [0.5, 0.10, 0.2, 0.02],
+            # axisbg=axcolor
+            facecolor=axcolor
+            )
         self.window_w_slider = Slider(ax_window_w, 'Width',
                                       0,
                                       (immax - immin) * 2,
@@ -861,8 +870,8 @@ def _import_data(data, axis, slice_step, first_slice_offset=0):
 
 # return data
 try:
-    from PyQt4 import QtGui, QtCore
-    class sed3qt(QtGui.QDialog):
+    from PyQt5 import QtGui, QtCore, QtWidgets
+    class sed3qt(QtWidgets.QDialog):
         def __init__(self, *pars, **params):
             # def __init__(self,parent=None):
             parent = None
@@ -902,7 +911,7 @@ try:
         def get_values(self):
             return self.sed
 
-    class sed3qtWidget(QtGui.QWidget):
+    class sed3qtWidget(QtWidgets.QWidget):
         def __init__(self, *pars, **params):
             # def __init__(self,parent=None):
             parent = None
@@ -915,7 +924,7 @@ try:
             # self.toolbar = NavigationToolbar(self.canvas, self)
 
             # set the layout
-            layout = QtGui.QVBoxLayout()
+            layout = QtWidgets.QVBoxLayout()
             # layout.addWidget(self.toolbar)
             layout.addWidget(self.canvas)
             # layout.addWidget(self.button)
@@ -943,6 +952,9 @@ try:
         def get_values(self):
             return self.sed
 except:
+    import traceback
+    logger.error(traceback.print_exc())
+
     pass
 
 # --------------------------tests-----------------------------

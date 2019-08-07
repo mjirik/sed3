@@ -34,7 +34,8 @@ requirements:
     - scipy
     - numpy
     - nose
-    - pyqt 4.11.*
+#    - pyqt 4.11.*
+    - pyqt 5.*
 
   run:
     - python
@@ -43,7 +44,7 @@ requirements:
     - scipy
     - nose
     - numpy
-    - pyqt 4.11.*
+    - pyqt 5.*
 
 test:
   # Python imports
