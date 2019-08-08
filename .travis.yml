@@ -12,22 +12,22 @@ python:
 matrix:
   include:
   - os: linux
-    name: PEP8 MyPy Coverage
-    python: 3.7
-    install: pip install -e .[tests,cov]
-    script:
-    - flake8
-    - mypy .
-    - pytest --cov
+#    name: PEP8 MyPy Coverage
+#    python: 3.7
+#    install: pip install -e .[tests,cov]
+#    script:
+#    - flake8
+#    - mypy .
+#    - pytest --cov
     after_success:
     - coveralls
   - os: osx
     language: minimal
-    install: pip3 install -e .[tests]
+#    install: pip3 install -e .[tests]
   - os: windows
     language: minimal
     before_install:
-    - choco install python3
+    - choco install miniconda3
     - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
 #matrix:
   allow_failures:
