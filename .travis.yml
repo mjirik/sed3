@@ -46,7 +46,7 @@ matrix:
 #matrix:
   allow_failures:
     - env: CONDA_PYTHON_VERSION=2.7
-    - env: CONDA_PYTHON_VERSION=3.7
+#    - env: CONDA_PYTHON_VERSION=3.7
     - os: windows
   fast_finish: true
 
