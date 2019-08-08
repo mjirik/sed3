@@ -58,10 +58,6 @@ os:
 #  - windows
 services:
   - xvfb
-#    env:
-#      - CONDA_PYTHON_VERSION=3.6
-#      - CONDA_PYTHON_VERSION=3.7
-#      - CONDA_PYTHON_VERSION=2.7
 before_install:
   - wget http://home.zcu.cz/~mjirik/lisa/install/install_conda.sh && source install_conda.sh
   - "export DISPLAY=:99.0"
@@ -69,15 +65,7 @@ before_install:
 env:
   - CONDA_PYTHON_VERSION=3.6
   - CONDA_PYTHON_VERSION=3.7
-  - CONDA_PYTHON_VERSION=2.7
-#virtualenv:
-#    system_site_packages: false
-#os:
-#  - linux
-#  - osx
-#    - windows # on bash there does not work linux X server
-#before_install:
-#    - sudo apt-get install -qq $(< requirements_apt.txt)
+#  - CONDA_PYTHON_VERSION=2.7
 install:
     - conda update --yes conda
     - conda create --yes -n travis python=$CONDA_PYTHON_VERSION
