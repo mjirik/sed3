@@ -16,6 +16,7 @@ from matplotlib.widgets import Slider, Button
 import traceback
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 # import pdb
@@ -24,13 +25,18 @@ logger = logging.getLogger(__name__)
 try:
     from PyQt5 import QtGui, QtCore
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
     try:
-        from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+        from matplotlib.backends.backend_qt5agg import (
+            NavigationToolbar2QT as NavigationToolbar,
+        )
     except:
-        from matplotlib.backends.backend_qt5agg import NavigationToolbar2QTAgg as NavigationToolbar
+        from matplotlib.backends.backend_qt5agg import (
+            NavigationToolbar2QTAgg as NavigationToolbar,
+        )
 except:
-    logger.exception('PyQt4 not detected')
-    print('PyQt4 not detected')
+    logger.exception("PyQt4 not detected")
+    print("PyQt4 not detected")
 
 # compatibility between python 2 and 3
 if sys.version_info[0] >= 3:
@@ -58,16 +64,30 @@ class sed3:
     selected_seeds = ed.seeds
 
     """
+
     # if data.shape != segmentation.shape:
     # raise Exception('Input size error','Shape if input data and segmentation
     # must be same')
 
     def __init__(
-            self, img, voxelsize=[1, 1, 1], initslice=0, colorbar=True,
-            cmap=matplotlib.cm.Greys_r, seeds=None, contour=None, zaxis=0,
-            mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
-            windowW=None, windowC=None, show=False, sed3_on_close=None, figure=None,
-            show_axis=False, flipV=False, flipH=False
+        self,
+        img,
+        voxelsize=[1, 1, 1],
+        initslice=0,
+        colorbar=True,
+        cmap=matplotlib.cm.Greys_r,
+        seeds=None,
+        contour=None,
+        zaxis=0,
+        mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
+        windowW=None,
+        windowC=None,
+        show=False,
+        sed3_on_close=None,
+        figure=None,
+        show_axis=False,
+        flipV=False,
+        flipH=False,
     ):
         """
 
@@ -143,8 +163,13 @@ class sed3:
         self.press2 = None
 
         # language
-        self.texts = {'btn_delete': 'Delete', 'btn_close': 'Close',
-                      'btn_view0': "v0", 'btn_view1': "v1", 'btn_view2': "v2"}
+        self.texts = {
+            "btn_delete": "Delete",
+            "btn_close": "Close",
+            "btn_view0": "v0",
+            "btn_view1": "v1",
+            "btn_view2": "v2",
+        }
 
         # iself.fig.subplots_adjust(left=0.25, bottom=0.25)
         if self.show_axis:
@@ -162,19 +187,21 @@ class sed3:
                 self.colorbar_obj.on_mappable_changed(self.imsh)
             except:
                 traceback.print_exc()
-                logger.warning("with old matplotlib version does not work colorbar redraw")
+                logger.warning(
+                    "with old matplotlib version does not work colorbar redraw"
+                )
 
         # user interface look
 
-        axcolor = 'lightgoldenrodyellow'
+        axcolor = "lightgoldenrodyellow"
         self.ax_actual_slice = self.fig.add_axes(
             [0.15, 0.15, 0.7, 0.03],
             # axisbg=axcolor
-            facecolor=axcolor
+            facecolor=axcolor,
         )
-        self.actual_slice_slider = Slider(self.ax_actual_slice, 'Slice', 0,
-                                          self.imgshape[2] - 1,
-                                          valinit=initslice)
+        self.actual_slice_slider = Slider(
+            self.ax_actual_slice, "Slice", 0, self.imgshape[2] - 1, valinit=initslice
+        )
 
         immax = np.max(self.img)
         immin = np.min(self.img)
@@ -182,66 +209,59 @@ class sed3:
         ax_window_c = self.fig.add_axes(
             [0.5, 0.05, 0.2, 0.02],
             # axisbg=axcolor
-            facecolor=axcolor
+            facecolor=axcolor,
         )
-        self.window_c_slider = Slider(ax_window_c, 'Center',
-                                          immin,
-                                          immax,
-                                          valinit=float(self.windowC))
+        self.window_c_slider = Slider(
+            ax_window_c, "Center", immin, immax, valinit=float(self.windowC)
+        )
         ax_window_w = self.fig.add_axes(
             [0.5, 0.10, 0.2, 0.02],
             # axisbg=axcolor
-            facecolor=axcolor
-            )
-        self.window_w_slider = Slider(ax_window_w, 'Width',
-                                      0,
-                                      (immax - immin) * 2,
-                                      valinit=float(self.windowW))
+            facecolor=axcolor,
+        )
+        self.window_w_slider = Slider(
+            ax_window_w, "Width", 0, (immax - immin) * 2, valinit=float(self.windowW)
+        )
         # conenction to wheel events
-        self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
+        self.fig.canvas.mpl_connect("scroll_event", self.on_scroll)
         self.actual_slice_slider.on_changed(self.sliceslider_update)
         self.window_c_slider.on_changed(self._on_window_c_change)
         self.window_w_slider.on_changed(self._on_window_w_change)
         # draw
-        self.fig.canvas.mpl_connect('button_press_event', self.on_press)
-        self.fig.canvas.mpl_connect('button_release_event', self.on_release)
-        self.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
+        self.fig.canvas.mpl_connect("button_press_event", self.on_press)
+        self.fig.canvas.mpl_connect("button_release_event", self.on_release)
+        self.fig.canvas.mpl_connect("motion_notify_event", self.on_motion)
 
         # delete seeds
         self.ax_delete_seeds = self.fig.add_axes([0.05, 0.05, 0.1, 0.075])
-        self.btn_delete = Button(
-            self.ax_delete_seeds, self.texts['btn_delete'])
+        self.btn_delete = Button(self.ax_delete_seeds, self.texts["btn_delete"])
         self.btn_delete.on_clicked(self.callback_delete)
 
         # close button
         self.ax_delete_seeds = self.fig.add_axes([0.85, 0.05, 0.1, 0.075])
-        self.btn_delete = Button(self.ax_delete_seeds, self.texts['btn_close'])
+        self.btn_delete = Button(self.ax_delete_seeds, self.texts["btn_close"])
         self.btn_delete.on_clicked(self.callback_close)
 
         # im shape
         # self.ax_shape = self.fig.add_axes([0.85, 0.05, 0.1, 0.075])
-        self.fig.text(0.20, 0.10, 'shape')
+        self.fig.text(0.20, 0.10, "shape")
         sh = self.img.shape
         self.fig.text(0.20, 0.05, "%ix%ix%i" % (sh[0], sh[1], sh[2]))
         self.draw_slice()
 
-
         # view0
-        self.ax_v0= self.fig.add_axes([0.05, 0.80, 0.08, 0.075])
-        self.btn_v0 = Button(
-            self.ax_v0, self.texts['btn_view0'])
+        self.ax_v0 = self.fig.add_axes([0.05, 0.80, 0.08, 0.075])
+        self.btn_v0 = Button(self.ax_v0, self.texts["btn_view0"])
         self.btn_v0.on_clicked(self._callback_v0)
 
         # view1
-        self.ax_v1= self.fig.add_axes([0.05, 0.70, 0.08, 0.075])
-        self.btn_v1 = Button(
-            self.ax_v1, self.texts['btn_view1'])
+        self.ax_v1 = self.fig.add_axes([0.05, 0.70, 0.08, 0.075])
+        self.btn_v1 = Button(self.ax_v1, self.texts["btn_view1"])
         self.btn_v1.on_clicked(self._callback_v1)
 
         # view2
-        self.ax_v2= self.fig.add_axes([0.05, 0.60, 0.08, 0.075])
-        self.btn_v2 = Button(
-            self.ax_v2, self.texts['btn_view2'])
+        self.ax_v2 = self.fig.add_axes([0.05, 0.60, 0.08, 0.075])
+        self.btn_v2 = Button(self.ax_v2, self.texts["btn_view2"])
         self.btn_v2.on_clicked(self._callback_v2)
         if show:
             self.show()
@@ -271,10 +291,10 @@ class sed3:
         self.windowC = windowC
         self.windowW = windowW
 
-            # self.imgmax = np.max(self.img)
-            # self.imgmin = np.min(self.img)
-            # self.windowC = windowC
-            # self.windowW = windowW
+        # self.imgmax = np.max(self.img)
+        # self.imgmin = np.min(self.img)
+        # self.windowC = windowC
+        # self.windowW = windowW
         # else:
         #     self.imgmax = windowC + (windowW / 2)
         #     self.imgmin = windowC - (windowW / 2)
@@ -288,7 +308,9 @@ class sed3:
                 self.colorbar_obj.on_mappable_changed(self.imsh)
             except:
                 traceback.print_exc()
-                logger.warning("with old matplotlib version does not work colorbar redraw")
+                logger.warning(
+                    "with old matplotlib version does not work colorbar redraw"
+                )
 
         self.update_slice()
 
@@ -299,7 +321,9 @@ class sed3:
                 self.colorbar_obj.on_mappable_changed(self.imsh)
             except:
                 traceback.print_exc()
-                logger.warning("with old matplotlib version does not work colorbar redraw")
+                logger.warning(
+                    "with old matplotlib version does not work colorbar redraw"
+                )
 
         self.update_slice()
 
@@ -328,18 +352,18 @@ class sed3:
         # update slicer
         self.fig.delaxes(self.ax_actual_slice)
         self.ax_actual_slice.cla()
-        del(self.actual_slice_slider)
+        del self.actual_slice_slider
         self.fig.add_axes(self.ax_actual_slice)
-        self.actual_slice_slider = Slider(self.ax_actual_slice, 'Slice', 0,
-                                          self.img.shape[2] - 1,
-                                          valinit=0)
+        self.actual_slice_slider = Slider(
+            self.ax_actual_slice, "Slice", 0, self.img.shape[2] - 1, valinit=0
+        )
         self.actual_slice_slider.on_changed(self.sliceslider_update)
         self.update_slice()
 
     def _rotate_start(self, data, zaxis):
         if data is not None:
             if zaxis == 0:
-                tr =(1, 2, 0)
+                tr = (1, 2, 0)
                 data = np.transpose(data, tr)
                 vs = self.actual_voxelsize
                 if self.actual_voxelsize is not None:
@@ -402,22 +426,30 @@ class sed3:
             sliceimg = sliceimg[:, -1:0:-1]
 
         if self.flipV:
-            sliceimg = sliceimg [-1:0:-1,:]
+            sliceimg = sliceimg[-1:0:-1, :]
 
         return sliceimg
 
     def draw_slice(self):
         sliceimg = self.img[:, :, int(self.actual_slice)]
         sliceimg = self.__flip(sliceimg)
-        self.imsh = self.ax.imshow(sliceimg, self.cmap, vmin=self.imgmin,
-                                   vmax=self.imgmax, interpolation='nearest')
+        self.imsh = self.ax.imshow(
+            sliceimg,
+            self.cmap,
+            vmin=self.imgmin,
+            vmax=self.imgmax,
+            interpolation="nearest",
+        )
         # plt.hold(True)
         # pdb.set_trace();
         sliceseeds = self.seeds[:, :, int(self.actual_slice)]
         sliceseeds = self.__flip(sliceseeds)
-        self.ax.imshow(self.prepare_overlay(
-            sliceseeds
-        ), interpolation='nearest', vmin=self.imgmin, vmax=self.imgmax)
+        self.ax.imshow(
+            self.prepare_overlay(sliceseeds),
+            interpolation="nearest",
+            vmin=self.imgmin,
+            vmax=self.imgmax,
+        )
 
         # vykreslení okraje
         # X,Y = np.meshgrid(self.imgshape[0], self.imgshape[1])
@@ -428,10 +460,7 @@ class sed3:
                 # ctr =
                 slicecontour = self.contour[:, :, int(self.actual_slice)]
                 slicecontour = self.__flip(slicecontour)
-                self.ax.contour(
-                    slicecontour, 1,
-                    levels=[0.5, 1.5, 2.5],
-                    linewidths=2)
+                self.ax.contour(slicecontour, 1, levels=[0.5, 1.5, 2.5], linewidths=2)
             except:
                 pass
 
@@ -448,6 +477,7 @@ class sed3:
 
         # pdb.set_trace();
         # plt.hold(False)
+
     def _ticklabels(self):
         if self.show_axis and self.actual_voxelsize is not None:
             # pass
@@ -456,8 +486,8 @@ class sed3:
             ymax = self.img.shape[1]
             xmaxmm = xmax * self.actual_voxelsize[0]
             ymaxmm = ymax * self.actual_voxelsize[1]
-            xmm = 10.0**np.floor(np.log10(xmaxmm))
-            ymm = 10.0**np.floor(np.log10(ymaxmm))
+            xmm = 10.0 ** np.floor(np.log10(xmaxmm))
+            ymm = 10.0 ** np.floor(np.log10(ymaxmm))
             x = xmm * 1.0 / self.actual_voxelsize[0]
             y = ymm * 1.0 / self.actual_voxelsize[1]
 
@@ -470,7 +500,6 @@ class sed3:
         else:
             self.ax.set_xticklabels([])
             self.ax.set_yticklabels([])
-
 
     def next_slice(self):
         self.actual_slice = self.actual_slice + 1
@@ -498,11 +527,11 @@ class sed3:
         # sh[2] = 4
         overlay = np.zeros(sh)
 
-        overlay[:, :, 0] = (seeds == 1)
-        overlay[:, :, 1] = (seeds == 2)
-        overlay[:, :, 2] = (seeds == 3)
+        overlay[:, :, 0] = seeds == 1
+        overlay[:, :, 1] = seeds == 2
+        overlay[:, :, 2] = seeds == 3
 
-        overlay[:, :, 3] = (seeds > 0)
+        overlay[:, :, 3] = seeds > 0
 
         return overlay
 
@@ -524,10 +553,10 @@ class sed3:
         return self.seeds
 
     def on_scroll(self, event):
-        ''' mouse wheel is used for setting slider value'''
-        if event.button == 'up':
+        """ mouse wheel is used for setting slider value"""
+        if event.button == "up":
             self.next_slice()
-        if event.button == 'down':
+        if event.button == "down":
             self.prev_slice()
         self.actual_slice_slider.set_val(self.actual_slice)
         # tim, ze dojde ke zmene slideru je show_slce volan z nej
@@ -536,7 +565,7 @@ class sed3:
 
     # malování -------------------
     def on_press(self, event):
-        'on but-ton press we will see if the mouse is over us and store data'
+        "on but-ton press we will see if the mouse is over us and store data"
         if event.inaxes != self.ax:
             return
         # contains, attrd = self.rect.contains(event)
@@ -547,7 +576,7 @@ class sed3:
         # self.press1 = True
 
     def on_motion(self, event):
-        'on motion we will move the rect if the mouse is over us'
+        "on motion we will move the rect if the mouse is over us"
         if self.press is None:
             return
 
@@ -560,15 +589,15 @@ class sed3:
         y0.append(event.ydata)
 
     def on_release(self, event):
-        'on release we reset the press data'
+        "on release we reset the press data"
         if self.press is None:
             return
         # print(self.press)
         x0, y0, btn = self.press
         if btn == 1:
-            color = 'r'
+            color = "r"
         elif btn == 2:
-            color = 'b'  # noqa
+            color = "b"  # noqa
 
         # plt.axes(self.ax)
         # plt.plot(x0, y0)
@@ -591,10 +620,12 @@ class sed3:
         if self.sed3_on_close is not None:
             self.sed3_on_close(self)
 
-    def set_seeds(self, px, py, pz, value=1, voxelsizemm=[1, 1, 1],
-                  cursorsizemm=[1, 1, 1]):
+    def set_seeds(
+        self, px, py, pz, value=1, voxelsizemm=[1, 1, 1], cursorsizemm=[1, 1, 1]
+    ):
         assert len(px) == len(
-            py), 'px and py describes a point, their size must be same'
+            py
+        ), "px and py describes a point, their size must be same"
 
         for i, item in enumerate(px):
             self.seeds[int(item), int(py[i]), int(pz)] = value
@@ -613,13 +644,20 @@ class sed3:
         return self.img[self.seeds == label]
 
 
-def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
-                shape=None, show=True,
-                flipH=False, flipV=False,
-                first_slice_offset=0,
-                first_slice_offset_to_see_seed_with_label=None,
-                slice_number=None
-                ):
+def show_slices(
+    data3d,
+    contour=None,
+    seeds=None,
+    axis=0,
+    slice_step=None,
+    shape=None,
+    show=True,
+    flipH=False,
+    flipV=False,
+    first_slice_offset=0,
+    first_slice_offset_to_see_seed_with_label=None,
+    slice_number=None,
+):
     """
     Show slices as tiled image
 
@@ -644,13 +682,13 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
         if shape is None:
             slice_step = 1
         else:
-            slice_step = ((data3d.shape[axis] - first_slice_offset ) / float(np.prod(shape)))
-
-
+            slice_step = (data3d.shape[axis] - first_slice_offset) / float(
+                np.prod(shape)
+            )
 
     if first_slice_offset_to_see_seed_with_label is not None:
         if seeds is not None:
-            inds = np.nonzero(seeds==first_slice_offset_to_see_seed_with_label)
+            inds = np.nonzero(seeds == first_slice_offset_to_see_seed_with_label)
             # print(inds)
             # take first one with defined seed
             # ind = inds[axis][0]
@@ -658,10 +696,15 @@ def show_slices(data3d, contour=None, seeds=None, axis=0, slice_step=None,
             ind = np.median(inds[axis])
             first_slice_offset = ind % slice_step
 
-
-    data3d = _import_data(data3d, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
-    contour = _import_data(contour, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
-    seeds = _import_data(seeds, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset)
+    data3d = _import_data(
+        data3d, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset
+    )
+    contour = _import_data(
+        contour, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset
+    )
+    seeds = _import_data(
+        seeds, axis=axis, slice_step=slice_step, first_slice_offset=first_slice_offset
+    )
 
     number_of_slices = data3d.shape[axis]
     # square image
@@ -725,7 +768,7 @@ def __get_slice(data, slice_number, axis=0, flipH=False, flipV=False):
     :return:
     """
     if axis == 0:
-        data2d =  data[slice_number, :, :]
+        data2d = data[slice_number, :, :]
     elif axis == 1:
         data2d = data[:, slice_number, :]
     elif axis == 2:
@@ -737,7 +780,7 @@ def __get_slice(data, slice_number, axis=0, flipH=False, flipV=False):
 
     if flipV:
         if data2d is not None:
-            data2d = data2d[-1:0:-1,:]
+            data2d = data2d[-1:0:-1, :]
     if flipH:
         if data2d is not None:
             data2d = data2d[:, -1:0:-1]
@@ -755,10 +798,7 @@ def __put_slice_in_slim(slim, dataim, sh, i):
     sp0 = int(st0 + dataim.shape[0])
     sp1 = int(st1 + dataim.shape[1])
 
-    slim[
-    st0:sp0,
-    st1:sp1
-    ] = dataim
+    slim[st0:sp0, st1:sp1] = dataim
 
     return slim
 
@@ -770,9 +810,11 @@ def __put_slice_in_slim(slim, dataim, sh, i):
 # def close():
 #     plt.close()
 
+
 def sigmoid(x, x0, k):
-     y = 1 / (1 + np.exp(-k*(x-x0)))
-     return y
+    y = 1 / (1 + np.exp(-k * (x - x0)))
+    return y
+
 
 def show_slice(data2d, contour2d=None, seeds2d=None):
     """
@@ -784,41 +826,41 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
     """
 
     import copy as cp
+
     # Show results
 
-    colormap = cp.copy(plt.cm.get_cmap('brg'))
+    colormap = cp.copy(plt.cm.get_cmap("brg"))
     colormap._init()
     colormap._lut[:1:, 3] = 0
 
-    plt.imshow(data2d, cmap='gray', interpolation='none')
+    plt.imshow(data2d, cmap="gray", interpolation="none")
     if contour2d is not None:
         plt.contour(contour2d, levels=[0.5, 1.5, 2.5])
     if seeds2d is not None:
         # Show results
-        colormap = copy.copy(plt.cm.get_cmap('Paired'))
+        colormap = copy.copy(plt.cm.get_cmap("Paired"))
         # colormap = copy.copy(plt.cm.get_cmap('gist_rainbow'))
         colormap._init()
 
         colormap._lut[0, 3] = 0
 
-        tmp0 = copy.copy(colormap._lut[:,0])
-        tmp1 = copy.copy(colormap._lut[:,1])
-        tmp2 = copy.copy(colormap._lut[:,2])
+        tmp0 = copy.copy(colormap._lut[:, 0])
+        tmp1 = copy.copy(colormap._lut[:, 1])
+        tmp2 = copy.copy(colormap._lut[:, 2])
 
         colormap._lut[:, 0] = sigmoid(tmp0, 0.5, 5)
         colormap._lut[:, 1] = sigmoid(tmp1, 0.5, 5)
-        colormap._lut[:, 2] = 0# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[:, 2] = 0  # sigmoid(tmp2, 0.5, 5)
         # seed 4
-        colormap._lut[140:220:, 1] = 0.7# sigmoid(tmp2, 0.5, 5)
-        colormap._lut[140:220:, 0] = 0.2# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[140:220:, 1] = 0.7  # sigmoid(tmp2, 0.5, 5)
+        colormap._lut[140:220:, 0] = 0.2  # sigmoid(tmp2, 0.5, 5)
         # seed 2
-        colormap._lut[40:120:, 1] = 1.# sigmoid(tmp2, 0.5, 5)
-        colormap._lut[40:120:, 0] = 0.1# sigmoid(tmp2, 0.5, 5)
-
+        colormap._lut[40:120:, 1] = 1.0  # sigmoid(tmp2, 0.5, 5)
+        colormap._lut[40:120:, 0] = 0.1  # sigmoid(tmp2, 0.5, 5)
 
         # seed 2
-        colormap._lut[120:150:, 0] = 1.# sigmoid(tmp2, 0.5, 5)
-        colormap._lut[120:150:, 1] = 0.1# sigmoid(tmp2, 0.5, 5)
+        colormap._lut[120:150:, 0] = 1.0  # sigmoid(tmp2, 0.5, 5)
+        colormap._lut[120:150:, 1] = 0.1  # sigmoid(tmp2, 0.5, 5)
 
         # my colors
 
@@ -827,14 +869,16 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
         # colormap._lut[3,:] = [.1,.1,.1,1]
         # colormap._lut[4,:] = [.3,.3,.3,1]
 
-        plt.imshow(seeds2d, cmap=colormap, interpolation='none')
+        plt.imshow(seeds2d, cmap=colormap, interpolation="none")
 
 
 def __select_slices(data, axis, slice_step, first_slice_offset=0):
     if data is None:
         return None
 
-    inds = np.floor(np.arange(first_slice_offset, data.shape[axis], slice_step)).astype(np.int)
+    inds = np.floor(np.arange(first_slice_offset, data.shape[axis], slice_step)).astype(
+        np.int
+    )
     # import ipdb
     # ipdb.set_trace()
     # logger.warning("select slices")
@@ -857,12 +901,15 @@ def _import_data(data, axis, slice_step, first_slice_offset=0):
     """
     try:
         import SimpleITK as sitk
+
         if type(data) is sitk.SimpleITK.Image:
             data = sitk.GetArrayFromImage(data)
     except:
         pass
 
-    data = __select_slices(data, axis, slice_step, first_slice_offset=first_slice_offset)
+    data = __select_slices(
+        data, axis, slice_step, first_slice_offset=first_slice_offset
+    )
     return data
 
 
@@ -871,6 +918,7 @@ def _import_data(data, axis, slice_step, first_slice_offset=0):
 # return data
 try:
     from PyQt5 import QtGui, QtCore, QtWidgets
+
     class sed3qt(QtWidgets.QDialog):
         def __init__(self, *pars, **params):
             # def __init__(self,parent=None):
@@ -951,8 +999,11 @@ try:
 
         def get_values(self):
             return self.sed
+
+
 except:
     import traceback
+
     logger.error(traceback.print_exc())
 
     pass
@@ -980,13 +1031,13 @@ class Tests(unittest.TestCase):
         self.assertEqual(self.ed.seeds.shape, self.rnddata.shape)
 
     def test_set_seeds(self):
-        ''' Testuje uložení do seedů '''
+        """ Testuje uložení do seedů """
         val = 7
         self.ed.set_seeds([10, 12, 13], [13, 13, 15], 3, value=val)
         self.assertEqual(self.ed.seeds[10, 13, 3], val)
 
     def test_prepare_overlay(self):
-        ''' Testuje vytvoření rgba obrázku z labelů'''
+        """ Testuje vytvoření rgba obrázku z labelů"""
         overlay = self.ed.prepare_overlay(self.segmcube[:, :, 6])
         onePixel = overlay[30, 40]
         self.assertTrue(all(onePixel == [1, 0, 0, 1]))
@@ -1049,10 +1100,11 @@ if __name__ == "__main__":
     ch = logging.StreamHandler()
     #   output configureation
     # logging.basicConfig(format='%(asctime)s %(message)s')
-    logging.basicConfig(format='%(message)s')
+    logging.basicConfig(format="%(message)s")
 
     formatter = logging.Formatter(
-        "%(levelname)-5s [%(module)s:%(funcName)s:%(lineno)d] %(message)s")
+        "%(levelname)-5s [%(module)s:%(funcName)s:%(lineno)d] %(message)s"
+    )
     # add formatter to ch
     ch.setFormatter(formatter)
 
@@ -1060,24 +1112,23 @@ if __name__ == "__main__":
 
     # input parser
     parser = argparse.ArgumentParser(
-        description='Segment vessels from liver. Try call sed3 -f lena')
+        description="Segment vessels from liver. Try call sed3 -f lena"
+    )
     parser.add_argument(
-        '-f', '--filename',
+        "-f",
+        "--filename",
         # default = '../jatra/main/step.mat',
-        default='lena',
-        help='*.mat file with variables "data", "segmentation" and "threshod"')
+        default="lena",
+        help='*.mat file with variables "data", "segmentation" and "threshod"',
+    )
+    parser.add_argument("-d", "--debug", action="store_true", help="run in debug mode")
     parser.add_argument(
-        '-d', '--debug', action='store_true',
-        help='run in debug mode')
+        "-e3", "--example3d", action="store_true", help="run with 3D example data"
+    )
+    parser.add_argument("-t", "--tests", action="store_true", help="run unittest")
     parser.add_argument(
-        '-e3', '--example3d', action='store_true',
-        help='run with 3D example data')
-    parser.add_argument(
-        '-t', '--tests', action='store_true',
-        help='run unittest')
-    parser.add_argument(
-        '-o', '--outputfile', type=str,
-        default='output.mat', help='output file name')
+        "-o", "--outputfile", type=str, default="output.mat", help="output file name"
+    )
     args = parser.parse_args()
 
     voxelsize = None
@@ -1093,7 +1144,7 @@ if __name__ == "__main__":
     if args.example3d:
         data = generate_data([16, 20, 24])
         voxelsize = [0.1, 1.2, 2.5]
-    elif args.filename == 'lena':
+    elif args.filename == "lena":
         from scipy import misc
 
         data = misc.lena()
@@ -1103,8 +1154,8 @@ if __name__ == "__main__":
         logger.debug(mat.keys())
 
         # load specific variable
-        dataraw = scipy.io.loadmat(args.filename, variable_names=['data'])
-        data = dataraw['data']
+        dataraw = scipy.io.loadmat(args.filename, variable_names=["data"])
+        data = dataraw["data"]
 
         # logger.debug(matthreshold['threshold'][0][0])
 
@@ -1120,12 +1171,12 @@ if __name__ == "__main__":
     pyed = sed3(data, voxelsize=voxelsize)
     output = pyed.show()
 
-    scipy.io.savemat(args.outputfile, {'data': output})
+    scipy.io.savemat(args.outputfile, {"data": output})
     pyed.get_seed_val(1)
 
 
 def index_to_coords(index, shape):
-    '''convert index to coordinates given the shape'''
+    """convert index to coordinates given the shape"""
     coords = []
     for i in xrange(1, len(shape)):
         divisor = int(np.product(shape[i:]))
@@ -1158,7 +1209,9 @@ def slices(img, shape=[3, 4]):
         coords = index_to_coords(i, sh)
         aic = np.asarray(img.shape[-2:]) * coords
 
-        allimg[aic[0]:aic[0] + imgi.shape[-2], aic[1]:aic[1] + imgi.shape[-1]] = imgi
+        allimg[
+            aic[0] : aic[0] + imgi.shape[-2], aic[1] : aic[1] + imgi.shape[-1]
+        ] = imgi
 
     #     plt.imshow(imgi)
     #     print(imgi.shape)
@@ -1184,6 +1237,6 @@ def sed2(img, contour=None, shape=[3, 4]):
     :return:
     """
 
-    plt.imshow(slices(img, shape), cmap='gray')
+    plt.imshow(slices(img, shape), cmap="gray")
     if contour is not None:
         plt.contour(slices(contour, shape))

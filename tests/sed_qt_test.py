@@ -14,6 +14,7 @@ import pytest
 from PyQt5 import QtGui, QtCore, QtWidgets
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+
 # from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 import matplotlib.pyplot as plt
 import sys
@@ -21,6 +22,7 @@ import random
 
 import os
 import numpy as np
+
 # plt.ion()
 # my_site = os.path.join(os.environ['HOME'] , "projects/sed3/")
 # sys.path.insert(0, my_site)
@@ -43,7 +45,7 @@ class FailingExample(QtWidgets.QWidget):
     def initUI(self):
 
         self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('Icon')
+        self.setWindowTitle("Icon")
         # self.setWindowIcon(QtGui.QIcon('web.png'))
         btn1 = QtGui.QPushButton("Button 1", self)
         btn1.clicked.connect(self.buttonClicked)
@@ -67,7 +69,6 @@ class FailingExample(QtWidgets.QWidget):
             vals = ed.o
             print(vals.seeds)
 
-
         print(np.nonzero(ed.seeds))
         # ed = sed3.sed3(img)
         # ed.sed3_on_close = self.callback_close
@@ -81,13 +82,13 @@ class FailingExample(QtWidgets.QWidget):
         print("callback222")
         print(np.nonzero(sss.seeds))
 
+
 # def callback_close(sss):
 #     print("callback")
 #     print(sss.seeds)
 
 
 class Example(QtWidgets.QWidget):
-
     def __init__(self):
         super(Example, self).__init__()
         self.initUI2()
@@ -109,9 +110,9 @@ class Example(QtWidgets.QWidget):
         # Just some button connected to `plot` method
         # self.btn1 = QtGui.QPushButton("Button 1", self)
         # self.btn1.clicked.connect(self.buttonClicked)
-        self.button = QtGui.QPushButton('Plot')
+        self.button = QtGui.QPushButton("Plot")
         self.button.clicked.connect(self.plot)
- # set the layout
+        # set the layout
         layout = QtGui.QVBoxLayout()
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
@@ -121,7 +122,7 @@ class Example(QtWidgets.QWidget):
     def initUI(self):
 
         self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('Icon')
+        self.setWindowTitle("Icon")
         # self.setWindowIcon(QtGui.QIcon('web.png'))
         self.show()
 
@@ -139,7 +140,7 @@ class Example(QtWidgets.QWidget):
         print("konec sed3")
 
     def plot(self):
-        ''' plot some random stuff '''
+        """ plot some random stuff """
         # random data
         data = [random.random() for i in range(10)]
 
@@ -150,14 +151,13 @@ class Example(QtWidgets.QWidget):
         ax.hold(False)
 
         # plot data
-        ax.plot(data, '*-')
+        ax.plot(data, "*-")
 
         # refresh canvas
         self.canvas.draw()
 
 
 class TemplateTest(unittest.TestCase):
-
     @pytest.mark.interactive
     def test_qt(self):
         # import sed3
@@ -193,9 +193,7 @@ class TemplateTest(unittest.TestCase):
         main = FailingExample()
         sys.exit(app.exec_())
 
-
         pass
-
 
     def test_sed3qtWidget(self):
         app = QtWidgets.QApplication(sys.argv)

@@ -11,6 +11,7 @@
 """
 
 import logging
+
 logger = logging.getLogger(__name__)
 import argparse
 from PyQt5 import QtGui, QtCore
@@ -37,23 +38,15 @@ def main():
     # logger.debug('start')
 
     # input parser
-    parser = argparse.ArgumentParser(
-        description=__doc__
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        '-i', '--inputfile',
-        default=None,
-        required=True,
-        help='input file'
+        "-i", "--inputfile", default=None, required=True, help="input file"
     )
-    parser.add_argument(
-        '-d', '--debug', action='store_true',
-        help='Debug mode')
+    parser.add_argument("-d", "--debug", action="store_true", help="Debug mode")
     args = parser.parse_args()
 
     if args.debug:
         ch.setLevel(logging.DEBUG)
-
 
 
 if __name__ == "__main__":

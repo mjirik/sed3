@@ -1,2 +1,2 @@
-__all__= ['sed3']
+__all__ = ["sed3"]
 from .sed3 import *

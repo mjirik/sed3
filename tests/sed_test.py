@@ -15,16 +15,15 @@ import pytest
 
 
 class TemplateTest(unittest.TestCase):
-
     def testSed2(self):
         import sed3
         import numpy as np
 
-        img = np.random.randint(0,20, [10, 10, 15])
+        img = np.random.randint(0, 20, [10, 10, 15])
         img[6:9, 2:7, 1:5] += 40
         img[7:9, 3:9, 8:14] += 60
 
-        seg= np.zeros([10, 10, 15])
+        seg = np.zeros([10, 10, 15])
         seg[6:9, 2:7, 1:5] = 1
         seg[7:9, 3:9, 8:14] = 2
 
@@ -65,11 +64,12 @@ class TemplateTest(unittest.TestCase):
         seeds[7:9, 3:9, 8:14] = 2
         segmentation = np.zeros(shape, dtype=np.uint8)
         segmentation[6:15, 2:17, 6:18] = 1
-        data += (segmentation * 5)
+        data += segmentation * 5
         return data, seeds, segmentation
 
     def test_run_with_seeds_and_contour(self):
         import sed3
+
         img, seeds, segmentation = self.create_data()
 
         sed3.sed3(img, seeds=seeds, contour=segmentation)
@@ -84,21 +84,36 @@ class TemplateTest(unittest.TestCase):
         :return:
         """
         import sed3
+
         img, seeds, segmentation = self.create_data()
         seeds[6:9, 10, 1:5] = 3
         seeds[7:9, 11, 8:14] = 4
 
-        ed = sed3.show_slices(img, seeds=seeds, contour=segmentation, slice_step=5, first_slice_offset_to_see_seed_with_label=1)
+        ed = sed3.show_slices(
+            img,
+            seeds=seeds,
+            contour=segmentation,
+            slice_step=5,
+            first_slice_offset_to_see_seed_with_label=1,
+        )
 
     def test_first_slice_offset(self):
         import sed3
+
         img, seeds, segmentation = self.create_data()
 
-        sed3.show_slices(img, seeds=seeds, contour=segmentation, slice_step=5,
-                              first_slice_offset_to_see_seed_with_label=1, show=False)
+        sed3.show_slices(
+            img,
+            seeds=seeds,
+            contour=segmentation,
+            slice_step=5,
+            first_slice_offset_to_see_seed_with_label=1,
+            show=False,
+        )
 
     def test_show_slices(self):
         import sed3
+
         img, seeds, segmentation = self.create_data()
 
         sed3.show_slices(img, seeds=seeds, contour=segmentation, show=False)
@@ -107,9 +122,12 @@ class TemplateTest(unittest.TestCase):
 
     def test_show_slices_slice_number(self):
         import sed3
+
         img, seeds, segmentation = self.create_data()
 
-        sed3.show_slices(img, seeds=seeds, contour=segmentation, show=False, slice_number=6)
+        sed3.show_slices(
+            img, seeds=seeds, contour=segmentation, show=False, slice_number=6
+        )
 
 
 if __name__ == "__main__":
