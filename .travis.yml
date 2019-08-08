@@ -1,28 +1,54 @@
 language: python
-python:
+#python:
 #  #  - "2.6"
 #  - "2.7"
 #  # - "3.2"
 #  # - "3.3"
-  - "2.7"
-env:
-    - CONDA_PYTHON_VERSION=2.7
-    - CONDA_PYTHON_VERSION=3.6
-    - CONDA_PYTHON_VERSION=3.7
-virtualenv:
-    system_site_packages: false
-os:
-  - linux
-  - osx
-#    - windows # on bash there does not work linux X server
-services:
-  - xvfb
+#  - "2.7"
+python:
+  - 3.7
+#  - 3.6
+
 matrix:
+  include:
+  - os: linux
+    name: PEP8 MyPy Coverage
+    python: 3.7
+    install: pip install -e .[tests,cov]
+    script:
+    - flake8
+    - mypy .
+    - pytest --cov
+    after_success:
+    - coveralls
+  - os: osx
+    language: minimal
+    install: pip3 install -e .[tests]
+  - os: windows
+    language: minimal
+    before_install:
+    - choco install python3
+    - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+#matrix:
   allow_failures:
     - env: CONDA_PYTHON_VERSION=2.7
     - env: CONDA_PYTHON_VERSION=3.7
     - os: osx
   fast_finish: true
+
+
+env:
+    - CONDA_PYTHON_VERSION=2.7
+    - CONDA_PYTHON_VERSION=3.6
+    - CONDA_PYTHON_VERSION=3.7
+#virtualenv:
+#    system_site_packages: false
+#os:
+#  - linux
+#  - osx
+#    - windows # on bash there does not work linux X server
+services:
+  - xvfb
 before_install:
     - wget http://home.zcu.cz/~mjirik/lisa/install/install_conda.sh && source install_conda.sh
   # We do this conditionally because it saves us some downloading if the
