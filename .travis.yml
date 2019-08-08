@@ -5,8 +5,8 @@ language: minimal
 #  # - "3.2"
 #  # - "3.3"
 #  - "2.7"
-python:
-  - 3.7
+#python:
+#  - 3.7
 #  - 3.6
 
 matrix:
@@ -48,6 +48,9 @@ matrix:
 os:
   - linux
   - osx
+
+windows:
+  -
 #  - windows
 services:
   - xvfb
@@ -84,6 +87,7 @@ install:
     - conda list
 # command to run tests
 script:
+  - source activate travis
   - python -m pytest --cov=sed3/
 #after_success:
 #  - coveralls
