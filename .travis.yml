@@ -26,8 +26,11 @@ matrix:
 #    install: pip3 install -e .[tests]
   - os: windows
     language: minimal
+    env:
+      - CONDA_PYTHON_VERSION=3.6
     before_install:
-    - choco install miniconda3
+#    - choco install miniconda3
+    - choco install miniconda3 --params="'/AddToPath:1'"
     - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
 #matrix:
   allow_failures:
@@ -38,9 +41,9 @@ matrix:
 
 
 env:
-    - CONDA_PYTHON_VERSION=2.7
-    - CONDA_PYTHON_VERSION=3.6
-    - CONDA_PYTHON_VERSION=3.7
+  - CONDA_PYTHON_VERSION=3.6
+  - CONDA_PYTHON_VERSION=3.7
+  - CONDA_PYTHON_VERSION=2.7
 #virtualenv:
 #    system_site_packages: false
 #os:
