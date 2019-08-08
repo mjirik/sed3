@@ -18,12 +18,18 @@ matrix:
 #    - flake8
 #    - mypy .
 #    - pytest --cov
-#  - os: osx
-#    language: minimal
-#    services:
-#      - xvfb
-##    env:
-##      - CONDA_PYTHON_VERSION=3.6
+  - os: osx
+    language: minimal
+    name: osx python36
+    env:
+      - CONDA_PYTHON_VERSION=3.6
+  - os: osx
+    language: minimal
+    name: osx python37
+    env:
+      - CONDA_PYTHON_VERSION=3.7
+    #    services:
+    #      - xvfb
 #    before_install:
 #      - wget http://home.zcu.cz/~mjirik/lisa/install/install_conda.sh && source install_conda.sh
 #      - "export DISPLAY=:99.0"
@@ -46,12 +52,9 @@ matrix:
 
 os:
   - linux
-  - osx
+  - osx:
+      - language: minimal
 
-windows:
-  - language: minimal
-osx:
-  - language: minimal
 #  - windows
 services:
   - xvfb
