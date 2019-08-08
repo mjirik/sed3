@@ -52,7 +52,7 @@ matrix:
 
 os:
   - linux
-  - osx:
+#  - osx:
       - language: minimal
 
 #  - windows
