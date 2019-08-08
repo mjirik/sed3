@@ -53,7 +53,7 @@ matrix:
 os:
   - linux
 #  - osx:
-      - language: minimal
+#      - language: minimal
 
 #  - windows
 services:
