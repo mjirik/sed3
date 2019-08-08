@@ -43,14 +43,16 @@ before_install:
 # command to install dependencies
 install:
     - conda update --yes conda
-    - conda install --yes -n travis pip nose coverage
-    - conda install --yes -n travis --file requirements_conda.txt
-#    - conda install --yes -n travis -c SimpleITK -c luispedro -c mjirik --file requirements_conda.txt
+#    - conda install --yes -n travis pip nose coverage
+    - conda install --yes -n travis --file requirements_conda.txt python=$CONDA_PYTHON_VERSION
     - source activate travis
-    - pip install -r requirements_pip.txt
+    - conda install -y -c conda-forge pytest coveralls pytest-cov python=$CONDA_PYTHON_VERSION
+#    - conda install --yes -n travis -c SimpleITK -c luispedro -c mjirik --file requirements_conda.txt
+#    - pip install -r requirements_pip.txt
     - conda info -a
     - conda list
 # command to run tests
-script: nosetests --with-coverage --cover-package=sed3
+script:
+  - python -m pytest --cov=sed3/
 after_success:
-    - coveralls
+  - coveralls

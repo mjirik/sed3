@@ -10,7 +10,7 @@
 
 """
 import unittest
-from nose.plugins.attrib import attr
+import pytest
 from PyQt5 import QtGui, QtCore, QtWidgets
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
@@ -28,9 +28,6 @@ import numpy as np
 #     def __init__(self, parent=None):
 #         super(Window, self).__init__(parent)
 #         self.figure = plt.figure
-
-
-
 
 
 class FailingExample(QtWidgets.QWidget):
@@ -161,7 +158,7 @@ class Example(QtWidgets.QWidget):
 
 class TemplateTest(unittest.TestCase):
 
-    @attr('interactive')
+    @pytest.mark.interactive
     def test_qt(self):
         # import sed3
         # import numpy as np
@@ -179,8 +176,7 @@ class TemplateTest(unittest.TestCase):
         main.show()
         sys.exit(app.exec_())
 
-    @attr('interactive')
-    @attr('actual')
+    @pytest.mark.interactive
     def test_sed3_qt(self):
         # import sed3
         # import numpy as np

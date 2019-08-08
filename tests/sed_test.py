@@ -11,7 +11,7 @@
 """
 import unittest
 import numpy as np
-from nose.plugins.attrib import attr
+import pytest
 
 
 class TemplateTest(unittest.TestCase):
@@ -32,7 +32,7 @@ class TemplateTest(unittest.TestCase):
         # import matplotlib.pyplot as plt
         # plt.show()
 
-    @attr('interactive')
+    @pytest.mark.interactive
     def test_interactive_test(self):
         import sed3
         import numpy as np
@@ -77,7 +77,7 @@ class TemplateTest(unittest.TestCase):
         # ed.show()
         # print(ed.seeds)
 
-    @attr('interactive')
+    @pytest.mark.interactive
     def test_first_slice_offset_interactive(self):
         """
         set offset to see seed with defined label

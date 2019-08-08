@@ -5,6 +5,7 @@
 # 1.4.
 
 * [Changed] PyQt5 compatibility
+* [Changed] Using `pytest` instead of `nose`
 
 # 1.3
 
