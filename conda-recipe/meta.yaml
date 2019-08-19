@@ -33,7 +33,7 @@ requirements:
 #    - pyyaml
     - scipy
     - numpy
-    - nose
+#    - nose
 #    - pyqt 4.11.*
     - pyqt 5.*
 
@@ -42,7 +42,7 @@ requirements:
     - matplotlib
 #    - pyyaml
     - scipy
-    - nose
+#    - nose
     - numpy
     - pyqt 5.*
 
