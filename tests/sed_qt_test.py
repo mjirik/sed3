@@ -12,8 +12,11 @@
 import unittest
 import pytest
 from PyQt5 import QtGui, QtCore, QtWidgets
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+# from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+# from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 # from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 import matplotlib.pyplot as plt
@@ -102,6 +105,9 @@ class Example(QtWidgets.QWidget):
         # this is the Canvas Widget that displays the `figure`
         # it takes the `figure` instance as a parameter to __init__
         self.canvas = FigureCanvas(self.figure)
+        # print(f"dir type canvas {type(self.canvas)}, "
+        #       f"type figure {type(self.figure)}"
+        #       f"\n{dir(self.canvas)}")
 
         # this is the Navigation widget
         # it takes the Canvas widget and a parent
@@ -110,10 +116,10 @@ class Example(QtWidgets.QWidget):
         # Just some button connected to `plot` method
         # self.btn1 = QtGui.QPushButton("Button 1", self)
         # self.btn1.clicked.connect(self.buttonClicked)
-        self.button = QtGui.QPushButton("Plot")
+        self.button = QtWidgets.QPushButton("Plot")
         self.button.clicked.connect(self.plot)
         # set the layout
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
         layout.addWidget(self.button)
@@ -148,7 +154,7 @@ class Example(QtWidgets.QWidget):
         ax = self.figure.add_subplot(111)
 
         # discards the old graph
-        ax.hold(False)
+        # ax.hold(False)
 
         # plot data
         ax.plot(data, "*-")
@@ -159,7 +165,7 @@ class Example(QtWidgets.QWidget):
 
 class TemplateTest(unittest.TestCase):
     @pytest.mark.interactive
-    def test_qt(self):
+    def test_qt_example(self):
         # import sed3
         # import numpy as np
         #
@@ -170,11 +176,12 @@ class TemplateTest(unittest.TestCase):
         # ed = sed3.sed3(img)
         # ed.show()
         # print(ed.seeds)
-        app = QtGui.QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
 
         main = Example()
         main.show()
-        sys.exit(app.exec_())
+        app.exec_()
+        # sys.exit(app.exec_())
 
     @pytest.mark.interactive
     def test_sed3_qt(self):
@@ -191,9 +198,10 @@ class TemplateTest(unittest.TestCase):
         app = QtGui.QApplication(sys.argv)
 
         main = FailingExample()
-        sys.exit(app.exec_())
+        app.exec_()
+        # sys.exit(app.exec_())
 
-        pass
+        # pass
 
     def test_sed3qtWidget(self):
         app = QtWidgets.QApplication(sys.argv)
@@ -208,11 +216,16 @@ class TemplateTest(unittest.TestCase):
         img[7:9, 3:9, 8:14] = 2
 
         ed = sed3.sed3qtWidget(img)
-        # ed.show()
+        ed.show()
         ed.close()
         # app.exec_()
+
+        # the ed.seeds is created on close
+        # The ed.seeds is created on GUI close.
+        # It works just with app.exec_() call
+
         # self.assertEquals(ed.seeds, sz)
-        # self.assertEqual(np.sum(ed.seeds), 0)
+        # assert np.sum(ed.seeds) == 0
 
 
 if __name__ == "__main__":

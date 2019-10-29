@@ -22,21 +22,29 @@ logger = logging.getLogger(__name__)
 # import pdb
 # pdb.set_trace();
 
+# try:
+#     from PyQt5 import QtGui, QtCore
+#     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+#
+#     try:
+#         from matplotlib.backends.backend_qt5agg import (
+#             NavigationToolbar2QT as NavigationToolbar,
+#         )
+#     except:
+#         from matplotlib.backends.backend_qt5agg import (
+#             NavigationToolbar2QTAgg as NavigationToolbar,
+#         )
+# except:
+#     logger.exception("PyQt4 not detected")
+#     print("PyQt4 not detected")
 try:
     from PyQt5 import QtGui, QtCore
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
-    try:
-        from matplotlib.backends.backend_qt5agg import (
-            NavigationToolbar2QT as NavigationToolbar,
-        )
-    except:
-        from matplotlib.backends.backend_qt5agg import (
-            NavigationToolbar2QTAgg as NavigationToolbar,
-        )
+    from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+    print("PyQt5 detected")
 except:
-    logger.exception("PyQt4 not detected")
-    print("PyQt4 not detected")
+    logger.exception("PyQt5 not detected")
+    print("PyQt5 not detected")
 
 # compatibility between python 2 and 3
 if sys.version_info[0] >= 3:
@@ -924,7 +932,7 @@ try:
             # def __init__(self,parent=None):
             parent = None
 
-            QtGui.QDialog.__init__(self, parent)
+            QtWidgets.QDialog.__init__(self, parent)
             # super(Window, self).__init__(parent)
             # self.setupUi(self)
             self.figure = plt.figure()
@@ -932,7 +940,7 @@ try:
             self.toolbar = NavigationToolbar(self.canvas, self)
 
             # set the layout
-            layout = QtGui.QVBoxLayout()
+            layout = QtWidgets.QVBoxLayout()
             layout.addWidget(self.toolbar)
             layout.addWidget(self.canvas)
             # layout.addWidget(self.button)
@@ -969,6 +977,9 @@ try:
             # self.setupUi(self)
             self.figure = plt.figure()
             self.canvas = FigureCanvas(self.figure)
+            # print(f"dir type canvas {type(self.canvas)}, "
+            #       f"type figure {type(self.figure)}"
+            #       f"\n{dir(self.canvas)}")
             # self.toolbar = NavigationToolbar(self.canvas, self)
 
             # set the layout
@@ -994,7 +1005,7 @@ try:
             self.close()
 
         def show(self):
-            super(sed3qtWidget, self).show()
+            return super(sed3qtWidget, self).show()
             return self.sed.show_fcn()
 
         def get_values(self):
