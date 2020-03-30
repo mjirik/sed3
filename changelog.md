@@ -2,11 +2,14 @@
 
 # Unreleased
 
-# 1.4.
+# 1.5
 
 * [Added] `imin` and `imax` to control intensity window slicers
 * [Fixed] Window slicer update on set_window function
 * [Added] Keyword `contours` with same meaning as `contour` 
+
+# 1.4.
+
 * [Changed] PyQt5 compatibility
 * [Changed] Using `pytest` instead of `nose`
 
