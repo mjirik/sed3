@@ -86,6 +86,7 @@ class sed3:
         cmap=matplotlib.cm.Greys_r,
         seeds=None,
         contour=None,
+        contours=None,
         zaxis=0,
         mouse_button_map={1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
         windowW=None,
@@ -96,16 +97,19 @@ class sed3:
         show_axis=False,
         flipV=False,
         flipH=False,
+        imin=None,
+        imax=None,
     ):
         """
 
-        :param img:
+        :param img: ndimage
         :param voxelsize: size of voxel
         :param initslice:
         :param colorbar:
         :param cmap:
         :param seeds: define seeds
         :param contour: contour
+        :param contours: the same as contour
         :param zaxis:
         :param mouse_button_map:
         :param windowW: window width
@@ -116,6 +120,8 @@ class sed3:
         :param show_axis:
         :param flipH: horizontal flip
         :param flipV: vertical flip
+        :param imin: used for calcualtion of the limits of intensity window
+        :param imax: used fo calculation of the limits of intensity window
 
         :return:
         """
@@ -160,12 +166,14 @@ class sed3:
             self.seeds = np.zeros(self.imgshape, np.int8)
         else:
             self.seeds = seeds
-        self.set_window(windowC, windowW)
+        self.window_c_slider:Slider = None
+        self.window_w_slider:Slider = None
+        self._set_window(windowC, windowW, update_gui=False)
 
         """ Mapping mouse button to class number. Default is normal order"""
         self.button_map = mouse_button_map
 
-        self.contour = contour
+        self.contour = contour if contours is None else contours
 
         self.press = None
         self.press2 = None
@@ -211,8 +219,10 @@ class sed3:
             self.ax_actual_slice, "Slice", 0, self.imgshape[2] - 1, valinit=initslice
         )
 
-        immax = np.max(self.img)
-        immin = np.min(self.img)
+        if imax is None:
+            imax = np.max(self.img)
+        if imin is None:
+            imin = np.min(self.img)
         # axcolor_front = 'darkslategray'
         ax_window_c = self.fig.add_axes(
             [0.5, 0.05, 0.2, 0.02],
@@ -220,7 +230,7 @@ class sed3:
             facecolor=axcolor,
         )
         self.window_c_slider = Slider(
-            ax_window_c, "Center", immin, immax, valinit=float(self.windowC)
+            ax_window_c, "Center", imin, imax, valinit=float(self.windowC)
         )
         ax_window_w = self.fig.add_axes(
             [0.5, 0.10, 0.2, 0.02],
@@ -228,7 +238,7 @@ class sed3:
             facecolor=axcolor,
         )
         self.window_w_slider = Slider(
-            ax_window_w, "Width", 0, (immax - immin) * 2, valinit=float(self.windowW)
+            ax_window_w, "Width", 0, (imax - imin) * 2, valinit=float(self.windowW)
         )
         # conenction to wheel events
         self.fig.canvas.mpl_connect("scroll_event", self.on_scroll)
@@ -290,7 +300,18 @@ class sed3:
         :param windowW: window width
         :return:
         """
+        self._set_window(windowC=windowC, windowW=windowW, update_gui=True)
+
+
+    def _set_window(self, windowC, windowW, update_gui=True):
+        """
+        Sets visualization window
+        :param windowC: window center
+        :param windowW: window width
+        :return:
+        """
         if not (windowW and windowC):
+            logger.debug(f"Automatic window setup")
             windowW = np.max(self.img) - np.min(self.img)
             windowC = (np.max(self.img) + np.min(self.img)) / 2.0
 
@@ -298,6 +319,11 @@ class sed3:
         self.imgmin = windowC - (windowW / 2)
         self.windowC = windowC
         self.windowW = windowW
+        if update_gui:
+            if self.window_c_slider:
+                self.window_c_slider.set_val(windowC)
+            if self.window_w_slider:
+                self.window_w_slider.set_val(windowW)
 
         # self.imgmax = np.max(self.img)
         # self.imgmin = np.min(self.img)
@@ -310,7 +336,7 @@ class sed3:
         #     self.windowW = windowW
 
     def _on_window_w_change(self, windowW):
-        self.set_window(self.windowC, windowW)
+        self._set_window(self.windowC, windowW, update_gui=False)
         if self.colorbar:
             try:
                 self.colorbar_obj.on_mappable_changed(self.imsh)
@@ -323,7 +349,7 @@ class sed3:
         self.update_slice()
 
     def _on_window_c_change(self, windowC):
-        self.set_window(windowC, self.windowW)
+        self._set_window(windowC, self.windowW, update_gui=False)
         if self.colorbar:
             try:
                 self.colorbar_obj.on_mappable_changed(self.imsh)

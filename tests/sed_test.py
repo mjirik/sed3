@@ -72,9 +72,20 @@ class TemplateTest(unittest.TestCase):
 
         img, seeds, segmentation = self.create_data()
 
-        sed3.sed3(img, seeds=seeds, contour=segmentation)
+        wc = 15
+        ww = 30
+
+        ed = sed3.sed3(img, seeds=seeds, contour=segmentation, windowC=None, windowW=ww)
+        assert ed.windowC != wc, "Should be set automatically"
+        assert ed.windowW != ww, "should be set automatically"
+        ed.set_window(windowW=ww, windowC=wc)
+
+        # ed = sed3.sed3(img, seeds=seeds, contour=segmentation, windowC=wc, windowW=ww)
+        assert ed.windowC == wc
+        assert ed.windowW == ww
+
         # ed = sed3.sed3(img, seeds=seeds, contour=segmentation)
-        # ed.show()
+        ed.show()
         # print(ed.seeds)
 
     @pytest.mark.interactive
