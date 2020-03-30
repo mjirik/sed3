@@ -85,7 +85,7 @@ class TemplateTest(unittest.TestCase):
         assert ed.windowW == ww
 
         # ed = sed3.sed3(img, seeds=seeds, contour=segmentation)
-        ed.show()
+        # ed.show()
         # print(ed.seeds)
 
     @pytest.mark.interactive
