@@ -64,6 +64,7 @@ class TemplateTest(unittest.TestCase):
         seeds[7:9, 3:9, 8:14] = 2
         segmentation = np.zeros(shape, dtype=np.uint8)
         segmentation[6:15, 2:17, 6:18] = 1
+        segmentation[10:16, 10:18, 10:19] = 2
         data += segmentation * 5
         return data, seeds, segmentation
 
@@ -85,6 +86,31 @@ class TemplateTest(unittest.TestCase):
         assert ed.windowW == ww
 
         # ed = sed3.sed3(img, seeds=seeds, contour=segmentation)
+        # ed.show()
+        # print(ed.seeds)
+
+    def test_ipy_run_with_seeds_and_contour(self):
+        import sed3
+        from ipywidgets.embed import embed_minimal_html
+        import ipywidgets
+
+        img, seeds, segmentation = self.create_data()
+
+        wc = 15
+        ww = 30
+
+        ed = sed3.sed3(img, seeds=seeds, contour=segmentation, windowC=None, windowW=ww)
+        assert ed.windowC != wc, "Should be set automatically"
+        assert ed.windowW != ww, "should be set automatically"
+        ed.set_window(windowW=ww, windowC=wc)
+
+        # ed = sed3.sed3(img, seeds=seeds, contour=segmentation, windowC=wc, windowW=ww)
+        assert ed.windowC == wc
+        assert ed.windowW == ww
+
+        wg = sed3.ipy_show_slices(img, seeds=seeds, contour=segmentation)
+        # wg = ipywidgets.IntSlider(value=40)
+        # embed_minimal_html('export.html', views=[wg], title='Widgets export')
         # ed.show()
         # print(ed.seeds)
 

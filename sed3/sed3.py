@@ -99,6 +99,7 @@ class sed3:
         flipH=False,
         imin=None,
         imax=None,
+        kwargs_contour=None
     ):
         """
 
@@ -174,6 +175,14 @@ class sed3:
         self.button_map = mouse_button_map
 
         self.contour = contour if contours is None else contours
+        # plt.contour is different from ax.contour
+        # so the args have to be different
+        self.kwargs_contour = kwargs_contour if kwargs_contour else dict(
+            cmap='hsv',
+            linewidths=2,
+            levels=np.unique(contour)# good for ax.contour
+            # levels = None  # good for plt.contour
+        )
 
         self.press = None
         self.press2 = None
@@ -457,10 +466,10 @@ class sed3:
         :return: flipp
         """
         if self.flipH:
-            sliceimg = sliceimg[:, -1:0:-1]
+            sliceimg = sliceimg[:, -1:None:-1]
 
         if self.flipV:
-            sliceimg = sliceimg[-1:0:-1, :]
+            sliceimg = sliceimg[-1:None:-1, :]
 
         return sliceimg
 
@@ -494,7 +503,14 @@ class sed3:
                 # ctr =
                 slicecontour = self.contour[:, :, int(self.actual_slice)]
                 slicecontour = self.__flip(slicecontour)
-                self.ax.contour(slicecontour, 1, levels=[0.5, 1.5, 2.5], linewidths=2)
+                # print(f'slice_contour [{slicecontour.dtype}]:{np.unique(slicecontour)}')
+                self.ax.contour(slicecontour,
+                                # 1,
+                                # levels=np.unique(slicecontour),
+                                # cmap='hsv'
+                                # linewidths=2
+                                **self.kwargs_contour
+                                )
             except:
                 pass
 
@@ -691,6 +707,7 @@ def show_slices(
     first_slice_offset=0,
     first_slice_offset_to_see_seed_with_label=None,
     slice_number=None,
+    kwargs_contour=None,
 ):
     """
     Show slices as tiled image
@@ -705,7 +722,15 @@ def show_slices(
     :param first_slice_offset: set offset of first slice
     :param first_slice_offset_to_see_seed_with_label: find offset to see slice with seed with defined label
     :param slice_number: int, Number of showed slices. Overwrites shape and slice_step.
+    :param kwargs_contour: (default: cmap='hsv', levels: calculated from contour)
     """
+    kwargs_contour = kwargs_contour if kwargs_contour else dict(
+        cmap='hsv',
+        linewidths=2,
+        levels=None, # good for plt.contours
+        # levels=np.unique(contour)  # good for ax.contours
+    )
+    # print(kwargs_contour)
 
     if slice_number is not None:
         slice_step = data3d.shape[axis] / slice_number
@@ -781,7 +806,7 @@ def show_slices(
 
         slim = __put_slice_in_slim(slim, im2d, meta_shape, i)
     #         show_slice(im2d, cont, seeds2d)
-    show_slice(slim, slco, slse)
+    show_slice(slim, slco, slse, kwargs_contour=kwargs_contour)
     if show:
         plt.show()
 
@@ -814,10 +839,10 @@ def __get_slice(data, slice_number, axis=0, flipH=False, flipV=False):
 
     if flipV:
         if data2d is not None:
-            data2d = data2d[-1:0:-1, :]
+            data2d = data2d[-1:None:-1, :]
     if flipH:
         if data2d is not None:
-            data2d = data2d[:, -1:0:-1]
+            data2d = data2d[:, -1:None:-1]
     return data2d
 
 
@@ -850,17 +875,27 @@ def sigmoid(x, x0, k):
     return y
 
 
-def show_slice(data2d, contour2d=None, seeds2d=None):
+def show_slice(data2d, contour2d=None, seeds2d=None, kwargs_contour=None):
     """
 
     :param data2d:
     :param contour2d:
     :param seeds2d:
+    :param kwargs_contour: default (cmap='hsv', levels: calculated from contour2d).
     :return:
     """
 
     import copy as cp
 
+    if kwargs_contour is None:
+        # plt.contor is different from ax.contour
+        # the arguments have to be slightly differen
+        kwargs_contour = dict(
+            # levels=[0.5, 1.5, 2.5],
+            cmap='hsv',
+            # levels=np.unique(contour2d) # good for ax.contour
+            levels=None # good for plt.contour
+        )
     # Show results
 
     colormap = cp.copy(plt.cm.get_cmap("brg"))
@@ -869,7 +904,7 @@ def show_slice(data2d, contour2d=None, seeds2d=None):
 
     plt.imshow(data2d, cmap="gray", interpolation="none")
     if contour2d is not None:
-        plt.contour(contour2d, levels=[0.5, 1.5, 2.5])
+        plt.contour(contour2d, **kwargs_contour)
     if seeds2d is not None:
         # Show results
         colormap = copy.copy(plt.cm.get_cmap("Paired"))
@@ -1277,3 +1312,40 @@ def sed2(img, contour=None, shape=[3, 4]):
     plt.imshow(slices(img, shape), cmap="gray")
     if contour is not None:
         plt.contour(slices(contour, shape))
+
+
+def ipy_show_slices(data3d, contour=None, seeds=None, zaxis=0, flipV=False, flipH=False, kwargs_contour=None):
+    from ipywidgets import interact, fixed
+    import ipywidgets
+    def nbw_show_slices_fcn(image, slice_number, contour, seeds, axis):
+        show_slices(
+            image, contour=contour, seeds=seeds,
+            first_slice_offset=slice_number, shape=[1, 1], show=False,
+            axis=axis,
+            flipH=flipH,
+            flipV=flipV,
+            kwargs_contour=kwargs_contour
+        )
+        #         plt.colorbar()
+        plt.axis('off')
+        plt.show()
+
+    axis_number_slider = ipywidgets.IntSlider(min=0, max=len(data3d.shape) - 1, continuous_update=False, value=zaxis)
+    slice_number_slider = ipywidgets.IntSlider(min=0, max=data3d.shape[0] - 1, continuous_update=False)
+
+    def update_slice_number_slider(*args):
+        slice_number_slider.max = data3d.shape[axis_number_slider.value] - 1
+        slice_number_slider.value = 0
+
+    axis_number_slider.observe(update_slice_number_slider, 'value')
+
+    out = interact(
+        nbw_show_slices_fcn,
+        image=fixed(data3d),
+        slice_number=slice_number_slider,
+        contour=fixed(contour),
+        seeds=fixed(seeds),
+        axis=axis_number_slider
+    )
+    return out
+

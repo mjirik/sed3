@@ -1,6 +1,7 @@
 # Changelog
 
 # Unreleased
+* [Added] jupyter notebook widget `sed3.ipy_show_slices` 
 
 # 1.5
 
