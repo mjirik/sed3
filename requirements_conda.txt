@@ -3,3 +3,5 @@ scipy
 matplotlib
 # pyqt=4.11.*
 pyqt=5.*
+# for testing jupyter notebook integration
+ipywidgets
