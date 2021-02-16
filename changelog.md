@@ -3,6 +3,9 @@
 Latest version: 1.6.3
 
 # Unreleased
+
+# 1.6
+
 * [Added] jupyter notebook widget `sed3.ipy_show_slices` 
 
 # 1.5
