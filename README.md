@@ -91,6 +91,8 @@ print(ed.seeds)
 
 # Interactive viewer in Jupyter notebook
 
+You will need `ipyextensions` installed first. In Jupyter lab there are difficulties with this extension. Try Jupyter Lab.
+
 ```python
 import sed3
 import  numpy as np
