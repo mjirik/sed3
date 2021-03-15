@@ -89,6 +89,23 @@ print(ed.seeds)
 
 ![sed_screenshot](graphics/example04.png)
 
+# Interactive viewer in Jupyter notebook
+
+```python
+import sed3
+import  numpy as np
+
+img = np.random.random([10, 12, 15])
+img[6:9, 2:7, 1:5] += 2
+img[7:9, 3:9, 8:14] += 3
+
+contour = np.zeros(img.shape)
+contour[6:8, 3:10, 2:10] = 1
+contour[6:8, 5:8, 4:7] = 2
+
+sed3.ipy_show_slices(img, contour=contour)
+```
+
 Install notes 
 =============
 
