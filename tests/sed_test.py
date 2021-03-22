@@ -27,7 +27,7 @@ class TemplateTest(unittest.TestCase):
         seg[6:9, 2:7, 1:5] = 1
         seg[7:9, 3:9, 8:14] = 2
 
-        ed = sed3.sed2(img, contour=seg)
+        ed = sed3.sed3(img, contour=seg)
         # import matplotlib.pyplot as plt
         # plt.show()
 

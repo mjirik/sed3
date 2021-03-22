@@ -91,7 +91,7 @@ print(ed.seeds)
 
 # Interactive viewer in Jupyter notebook
 
-You will need `ipyextensions` installed first. In Jupyter lab there are difficulties with this extension. Try Jupyter Lab.
+You will need `ipywidgets` installed first. In Jupyter lab there are difficulties with this extension. Try Jupyter Lab.
 
 ```python
 import sed3
@@ -111,5 +111,11 @@ sed3.ipy_show_slices(img, contour=contour)
 Install notes 
 =============
 
-    conda install -c mjirik -c conda-forge sed3
+    conda install -c mjirik -c conda-forge sed3 
+
+Install notes
+
+=============
+
+    conda install -c mjirik -c conda-forge sed3 
 
